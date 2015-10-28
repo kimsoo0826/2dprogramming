@@ -1,6 +1,18 @@
-from pico2d import *
-import random
+import sys
+sys.path.append('../LabsAll/Labs')
 
+import random
+import json
+import os
+
+from pico2d import *
+
+import game_framework
+import title
+
+
+
+name = "MainState"
 class Chotype3:
     image =None
 
@@ -88,7 +100,7 @@ choq=0 #초가스 q 올라오는 y값
 
 characterxr=False
 characterxl=False
-mainscreen=False
+mainscreen=True
 lifecount=2
 hurt=0   #맞음
 hurttime=0 #맞은 시간
