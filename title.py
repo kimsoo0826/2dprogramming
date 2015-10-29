@@ -1,7 +1,13 @@
+import sys
+sys.path.append('../LabsAll/Labs')
+
+import random
+import json
+import os
 import game_framework
 from pico2d import *
-
 import game
+
 
 name = "Title"
 image = None
@@ -9,6 +15,7 @@ image = None
 
 def enter():
     global image
+    open_canvas()
     image=load_image('title.png')
 
 
@@ -23,14 +30,15 @@ def handle_events():
         if event.type==SDL_QUIT:
             game_framework.quit()
         else:
-            if(event.type, event.key)==(SDL_KEYDOWN, SDLK_RETURN):
+            if(event.type, event.key)==(SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
             elif(event.type, event.key)==(SDL_KEYDOWN, SDLK_RETURN):
-                game_framework.change_state(game)
+                game_framework.push_state(game)
 
 
 
 def draw():
+    global image
     clear_canvas()
     image.draw(400,300)
     update_canvas()
