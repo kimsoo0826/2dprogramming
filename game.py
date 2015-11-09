@@ -46,7 +46,7 @@ class Chotype3:
     def __init__(self):
         self.x, self.y =random.randint(0, 800), random.randint(100, 700)+600
         if Chotype3.image==None:
-            Chotype3.image = load_image('chotype3.png')
+            Chotype3.image = load_image('image\\chogas\\chotype3.png')
 
     def update(self):
         self.y -=5
@@ -85,18 +85,17 @@ def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     global image
     global ground,gameback,life,cho,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
     #open_canvas()
-    ground = load_image('ground.png')
-    gameback = load_image('gameback.png')
-    life=load_image('life.png')#생명
-    cho=load_image('chogas.png')#초가스 등장모습
-    vel=load_image('velkoz.png')#벨코즈 등장모습
-    pi=load_image('pidul.png')#피들스틱 등장모습
-    chotype1=load_image('chotype1.png')#초가스 첫번째 스킬
-    chotype2=load_image('chotype2.png')#초가스 두번째 스킬)
-    chotype4=load_image('chotype4.png')
-    danger=load_image('danger.png')
-    character=load_image('character.png')
-    title=load_image('title.png')
+    ground = load_image('image\\ground.png')
+    gameback = load_image('image\\gameback.png')
+    life=load_image('image\\life.png')#생명
+    cho=load_image('image\\chogas\\chogas.png')#초가스 등장모습
+    vel=load_image('image\\velkoz\\velkoz.png')#벨코즈 등장모습
+    pi=load_image('image\\pidul\\pidul.png')#피들스틱 등장모습
+    chotype1=load_image('image\\chogas\\chotype1.png')#초가스 첫번째 스킬
+    chotype2=load_image('image\\chogas\\chotype2.png')#초가스 두번째 스킬)
+    chotype4=load_image('image\\chogas\\chotype4.png')
+    danger=load_image('image\\danger.png')
+    character=load_image('image\\character.png')
 
     chotype3=Chotype3()
     team = [Chotype3() for i in range(30)] #초가스 e 개수
@@ -128,6 +127,8 @@ def handle_events():
             running=False
 
         elif event.type==SDL_KEYDOWN:
+            if event.key==SDLK_ESCAPE:
+                game_framework.quit()
             if event.key==SDLK_SPACE:
                  jump+=1
             if event.key==SDLK_RIGHT:

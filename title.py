@@ -16,7 +16,7 @@ image = None
 def enter():
     global image
     open_canvas()
-    image=load_image('title.png')
+    image=load_image('image\\title.png')
 
 
 def exit():
