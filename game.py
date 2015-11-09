@@ -36,7 +36,7 @@ jumpturn=False
 running=True
 characterx=0
 charactery=0
-type= 0 #random.randrange(1,3)%3
+type= 1 #random.randrange(1,3)%3
 count=0;
 four=4
 
@@ -62,6 +62,7 @@ count=0
 wframe=0 #초가스 w 프레임
 mousex=0
 mousey=0
+velq=[0]*3
 
 ground=None
 gameback=None
@@ -84,6 +85,7 @@ chotype3=None
 def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     global image
     global ground,gameback,life,cho,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
+    global danger2
     #open_canvas()
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
@@ -95,6 +97,7 @@ def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     chotype2=load_image('image\\chogas\\chotype2.png')#초가스 두번째 스킬)
     chotype4=load_image('image\\chogas\\chotype4.png')
     danger=load_image('image\\danger.png')
+    danger2=load_image('image\\danger2.png')
     character=load_image('image\\character.png')
 
     chotype3=Chotype3()
@@ -169,7 +172,8 @@ def draw():
     global gameback
     global timer
     global cho,chox,danger,dangerframe
-    global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime
+    global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
+    global velq
     gameback.draw(400,300)#검은 배경
     if type==0:
         timer+=1
@@ -269,9 +273,32 @@ def draw():
 
 
     if type==1:
-        vel.draw(1100+velx,250)#벨코즈 캐릭터(
+        timer+=1
+        vel.draw(1100+velx,250)#벨코즈 캐릭터
         if velx>-500:
             velx-=10
+
+        if timer==5:
+            for i in range(0,3):
+                velq[i]=random.randint(0,7)*100
+
+
+        if timer>10:
+            danger2.clip_draw(dangerframe*100,0,100,800,velq[0],400)
+            if timer%4==0:
+                dangerframe=(dangerframe+1)%4
+
+        if timer>50:
+            danger2.clip_draw(dangerframe*100,0,100,800,velq[1],400)
+            if timer%4==0:
+                dangerframe=(dangerframe+1)%4
+
+        if timer>100:
+            danger2.clip_draw(dangerframe*100,0,100,800,velq[2],400)
+            if timer%4==0:
+                dangerframe=(dangerframe+1)%4
+
+
     if type==2:
         pi.draw(950+pix,250)#피들스틱 캐릭터
         if pix>-500:
