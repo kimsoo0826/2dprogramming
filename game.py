@@ -29,7 +29,7 @@ mainscreen=True
 lifecount=2
 hurt=0   #맞음
 hurttime=0 #맞은 시간
-timer=0
+timer=700
 wcheck=0
 jump=False
 jumpturn=False
@@ -53,7 +53,16 @@ class Chotype3:
 
     def draw(self):
         self.image.clip_draw(0, 0, 50, 100, self.x, self.y)
+class Velkozr:
+    image =None
 
+    def __init__(self):
+        self.x, self.y =0,random.randint(-90,300)
+        if Velkozr.image==None:
+            Velkozr.image = load_image('image\\velkoz\\velkoz r.png')
+
+    def draw(self):
+        self.image.clip_draw(0, 0, 1800,600 , self.x, self.y)
 
 dangerframe=0 #위험 프레임\
 dangerline=[0]*7#초가스 r danger 깜빡이는 프레임
@@ -68,6 +77,7 @@ velwframe=0
 velqy=[0]*3
 velqx=[0]*3
 velw2y=0
+
 
 ground=None
 gameback=None
@@ -90,7 +100,7 @@ chotype3=None
 def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     global image
     global ground,gameback,life,cho,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
-    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y
+    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y,velkozr,velteam
     #open_canvas()
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
@@ -110,11 +120,14 @@ def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     danger2=load_image('image\\danger2.png')
     character=load_image('image\\character.png')
 
+    velkozr=Velkozr()
     chotype3=Chotype3()
     team = [Chotype3() for i in range(30)] #초가스 e 개수
+    velteam=[Velkozr() for i in range(30)]
     chotypeF= [0] * 7
     checktype4=[0]*7
     chotype4frame=[0]*7
+
 
 
 def exit():
@@ -183,7 +196,7 @@ def draw():
     global timer
     global cho,chox,danger,dangerframe
     global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
-    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump
+    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump,velteam,velkozr
     gameback.draw(400,300)#검은 배경
     if type==0:
         timer+=1
@@ -410,10 +423,10 @@ def draw():
 
         ground.draw(400,300)
 
-        if timer>320 and timer<600:
-            if 875+velw2y >275:
+        if timer>320 and timer<650:
+            if 875+velw2y >525:
                 velw2y-=50
-            velw2.draw(400,875+velw2y,800,100)
+            velw2.draw(400,875+velw2y,800,600)
 
             if charactery+75>250 and hurt==0:
                 lifecount-=1
@@ -497,6 +510,23 @@ def draw():
                         jump=1
                     if characterx+75>650 and characterx+75<750:
                         jump=1
+        if timer>=700:
+            for i in range(0,30):
+                if timer>700+(20*i) and timer<720+(20*i):
+                    velteam[i].draw()
+                    if charactery+75<velteam[i].y+200 and charactery+75>velteam[i].y-100+200 and hurt==0:#충돌체크 조금만 더
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
+
+
+
+
+
+
+
+
+
 
 
 
