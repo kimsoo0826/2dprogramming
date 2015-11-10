@@ -63,9 +63,11 @@ wframe=0 #초가스 w 프레임
 mousex=0
 mousey=0
 velq=[0]*3
-velqframe=[0]*3;
-velqy=[0]*3;
-velqx=[0]*3;
+velqframe=[0]*3
+velwframe=0
+velqy=[0]*3
+velqx=[0]*3
+velw2y=0
 
 ground=None
 gameback=None
@@ -88,7 +90,7 @@ chotype3=None
 def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     global image
     global ground,gameback,life,cho,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
-    global danger2,velq1,velq2,velq3,velqframe
+    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y
     #open_canvas()
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
@@ -102,7 +104,8 @@ def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     velq1=load_image('image\\velkoz\\velkozq.png')#벨코즈 첫번째 스킬
     velq2=load_image('image\\velkoz\\velkozq2.png')#벨코즈 첫번째 스킬
     velq3=load_image('image\\velkoz\\velkozq3.png')#벨코즈 첫번째 스킬
-
+    velw1=load_image('image\\velkoz\\velkozw.png')#벨코즈 두번째 스킬
+    velw2=load_image('image\\velkoz\\velkoz w down.png')#벨코즈 두번째 스킬
     danger=load_image('image\\danger.png')
     danger2=load_image('image\\danger2.png')
     character=load_image('image\\character.png')
@@ -180,7 +183,7 @@ def draw():
     global timer
     global cho,chox,danger,dangerframe
     global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
-    global velq,velq1,velq2,velq3,velqframe,velqx,velqy
+    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe
     gameback.draw(400,300)#검은 배경
     if type==0:
         timer+=1
@@ -286,9 +289,9 @@ def draw():
                 for i in range(0,3):
                     velq[i]=random.randint(0,7)*100
 
-        if timer>10:
+        if timer>10 and timer<320:
             if timer<50:
-                danger2.clip_draw(dangerframe*100,0,100,800,velq[0],400)
+                danger2.clip_draw(dangerframe*100,0,100,800,velq[0],300)
                 if timer%4==0:
                     dangerframe=(dangerframe+1)%4
             if timer>50 and timer<120:
@@ -299,23 +302,36 @@ def draw():
                     velqframe[0]=(velqframe[0]+1)%4
                 if timer==119:
                     velqframe[0]=0
+                if 100+characterx>velq[0] and 100+characterx<velq[0]+100 and hurt==0:
+                    if 75+charactery<800-velqy[0] and 75+charactery>700-velqy[0]:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
             if timer>120 and timer<145:
                 if timer==144:
                     velqframe[0]=0
                 velq2.clip_draw(velqframe[0]*100,0,100,100,velq[0],100)
                 if timer%8==0:
                     velqframe[0]=(velqframe[0]+1)%3
+
             if timer>145 and timer<225:
                 velqx[0]+=10
                 velq3.clip_draw(100,0,100,100,velq[0]+velqx[0],100)
                 velq3.clip_draw(0,0,100,100,velq[0]-velqx[0],100)
+                if characterx+100>velq[0]+velqx[0] and characterx+100<100+velq[0]+velqx[0] and hurt==0:
+                    if charactery+75<100:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
+                if characterx+100>velq[0]-velqx[0] and characterx+100<100+velq[0]-velqx[0] and hurt==0:
+                    if charactery+75<100:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
 
-
-
-
-        if timer>50:
+        if timer>50 and timer<320:
             if timer<90:
-                danger2.clip_draw(dangerframe*100,0,100,800,velq[1],400)
+                danger2.clip_draw(dangerframe*100,0,100,800,velq[1],300)
                 if timer%4==0:
                     dangerframe=(dangerframe+1)%4
         if timer>90 and timer<160:
@@ -326,6 +342,11 @@ def draw():
                     velqframe[1]=(velqframe[1]+1)%4
                 if timer==159:
                     velqframe[1]=0
+                if 100+characterx>velq[1] and 100+characterx<velq[1]+100 and hurt==0:
+                    if 75+charactery<800-velqy[1] and 75+charactery>700-velqy[1]:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
         if timer>160 and timer<185:
             if timer==184:
                 velqframe[1]=0
@@ -336,30 +357,92 @@ def draw():
                 velqx[1]+=10
                 velq3.clip_draw(100,0,100,100,velq[1]+velqx[1],100)
                 velq3.clip_draw(0,0,100,100,velq[1]-velqx[1],100)
+                if characterx+100>velq[1]+velqx[1] and characterx+100<100+velq[1]+velqx[1] and hurt==0:
+                    if charactery+75<100:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
+                if characterx+100>velq[1]-velqx[1] and characterx+100<100+velq[1]-velqx[1] and hurt==0:
+                    if charactery+75<100:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
 
-        if timer>100:
+        if timer>100 and timer<320:
             if timer<140:
-                danger2.clip_draw(dangerframe*100,0,100,800,velq[2],400)
+                danger2.clip_draw(dangerframe*100,0,100,800,velq[2],300)
                 if timer%4==0:
                     dangerframe=(dangerframe+1)%4
             if timer>140 and timer<210:
                 if velqy[2]<700:
                     velqy[2]+=10
-                velq1.clip_draw(velqframe[2]*100,0,100,100,velq[0],800-velqy[2])
+                velq1.clip_draw(velqframe[2]*100,0,100,100,velq[2],800-velqy[2])
                 if timer%8==0:
                     velqframe[2]=(velqframe[2]+1)%4
                 if timer==209:
                     velqframe[2]=0
+                if 100+characterx>velq[2] and 100+characterx<velq[2]+100 and hurt==0:
+                    if 75+charactery<800-velqy[2] and 75+charactery>700-velqy[2]:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
             if timer>210 and timer<235:
                 if timer==234:
                     velqframe[2]=0
-                velq2.clip_draw(velqframe[2]*100,0,100,100,velq[0],100)
+                velq2.clip_draw(velqframe[2]*100,0,100,100,velq[2],100)
                 if timer%8==0:
                     velqframe[2]=(velqframe[2]+1)%3
             if timer>235 and timer<315:
                 velqx[2]+=10
-                velq3.clip_draw(100,0,100,100,velq[0]+velqx[2],100)
-                velq3.clip_draw(0,0,100,100,velq[0]-velqx[2],100)
+                velq3.clip_draw(100,0,100,100,velq[2]+velqx[2],100)
+                velq3.clip_draw(0,0,100,100,velq[2]-velqx[2],100)
+                if characterx+100>velq[2]+velqx[2] and characterx+100<100+velq[2]+velqx[2] and hurt==0:
+                    if charactery+75<100:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
+                if characterx+100>velq[2]-velqx[2] and characterx+100<100+velq[2]-velqx[2] and hurt==0:
+                    if charactery+75<100:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
+
+
+        ground.draw(400,300)
+
+        if timer>320:
+            if 875+velw2y >275:
+                velw2y-=50
+            velw2.draw(400,875+velw2y,800,100)
+            if timer>325 and timer<=389:
+                velw1.clip_draw(100*velwframe,0,100,100,50,10)
+                velw1.clip_draw(100*velwframe,0,100,100,250,10)
+                velw1.clip_draw(100*velwframe,0,100,100,450,10)
+                velw1.clip_draw(100*velwframe,0,100,100,650,10)
+                if timer%8==0:
+                    velwframe=(velwframe+1)%8
+            if timer>389 and timer<=453:
+                velw1.clip_draw(100*velwframe,0,100,100,150,10)
+                velw1.clip_draw(100*velwframe,0,100,100,350,10)
+                velw1.clip_draw(100*velwframe,0,100,100,550,10)
+                velw1.clip_draw(100*velwframe,0,100,100,750,10)
+                if timer%8==0:
+                    velwframe=(velwframe+1)%8
+            if timer>453 and timer<=517:
+                velw1.clip_draw(100*velwframe,0,100,100,50,10)
+                velw1.clip_draw(100*velwframe,0,100,100,250,10)
+                velw1.clip_draw(100*velwframe,0,100,100,450,10)
+                velw1.clip_draw(100*velwframe,0,100,100,650,10)
+                if timer%8==0:
+                    velwframe=(velwframe+1)%8
+            if timer>517 and timer<=581:
+                velw1.clip_draw(100*velwframe,0,100,100,150,10)
+                velw1.clip_draw(100*velwframe,0,100,100,350,10)
+                velw1.clip_draw(100*velwframe,0,100,100,550,10)
+                velw1.clip_draw(100*velwframe,0,100,100,750,10)
+                if timer%8==0:
+                    velwframe=(velwframe+1)%8
+
 
 
     if type==2:
@@ -372,8 +455,10 @@ def draw():
     if hurt==1:
         if timer%6==0:
             character.draw(100+characterx,75+charactery,50,40)
+    if type!=1:
+       ground.draw(400,300) #땅
 
-    ground.draw(400,300) #땅
+
 
 
     life.clip_draw(266*lifecount,0,266,600,150,560,300,200)
