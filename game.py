@@ -183,7 +183,7 @@ def draw():
     global timer
     global cho,chox,danger,dangerframe
     global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
-    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe
+    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump
     gameback.draw(400,300)#검은 배경
     if type==0:
         timer+=1
@@ -410,10 +410,16 @@ def draw():
 
         ground.draw(400,300)
 
-        if timer>320:
+        if timer>320 and timer<600:
             if 875+velw2y >275:
                 velw2y-=50
             velw2.draw(400,875+velw2y,800,100)
+
+            if charactery+75>250 and hurt==0:
+                lifecount-=1
+                hurt=1
+                hurttime=timer
+
             if timer>325 and timer<=389:
                 velw1.clip_draw(100*velwframe,0,100,100,50,10)
                 velw1.clip_draw(100*velwframe,0,100,100,250,10)
@@ -421,27 +427,76 @@ def draw():
                 velw1.clip_draw(100*velwframe,0,100,100,650,10)
                 if timer%8==0:
                     velwframe=(velwframe+1)%8
+                if timer==389:
+                    if characterx+75>150 and characterx+75<250:
+                        jump=1
+                    if characterx+75>350 and characterx+75<450:
+                        jump=1
+                    if characterx+75>550 and characterx+75<650:
+                        jump=1
+                    if characterx+75>750 and characterx+75<850:
+                        jump=1
+
+
+
+
+
             if timer>389 and timer<=453:
+                if timer ==390:
+                    velwframe=0
                 velw1.clip_draw(100*velwframe,0,100,100,150,10)
                 velw1.clip_draw(100*velwframe,0,100,100,350,10)
                 velw1.clip_draw(100*velwframe,0,100,100,550,10)
                 velw1.clip_draw(100*velwframe,0,100,100,750,10)
                 if timer%8==0:
                     velwframe=(velwframe+1)%8
+                if timer==453:
+                    if characterx+75>50 and characterx+75<150:
+                        jump=1
+                    if characterx+75>250 and characterx+75<350:
+                        jump=1
+                    if characterx+75>450 and characterx+75<550:
+                        jump=1
+                    if characterx+75>650 and characterx+75<750:
+                        jump=1
+
             if timer>453 and timer<=517:
+                if timer ==453:
+                    velwframe=0
                 velw1.clip_draw(100*velwframe,0,100,100,50,10)
                 velw1.clip_draw(100*velwframe,0,100,100,250,10)
                 velw1.clip_draw(100*velwframe,0,100,100,450,10)
                 velw1.clip_draw(100*velwframe,0,100,100,650,10)
                 if timer%8==0:
                     velwframe=(velwframe+1)%8
+                if timer==517:
+                    if characterx+75>150 and characterx+75<250:
+                        jump=1
+                    if characterx+75>350 and characterx+75<450:
+                        jump=1
+                    if characterx+75>550 and characterx+75<650:
+                        jump=1
+                    if characterx+75>750 and characterx+75<850:
+                        jump=1
+
             if timer>517 and timer<=581:
+                if timer ==517:
+                    velwframe=0
                 velw1.clip_draw(100*velwframe,0,100,100,150,10)
                 velw1.clip_draw(100*velwframe,0,100,100,350,10)
                 velw1.clip_draw(100*velwframe,0,100,100,550,10)
                 velw1.clip_draw(100*velwframe,0,100,100,750,10)
                 if timer%8==0:
                     velwframe=(velwframe+1)%8
+                if timer==581:
+                    if characterx+75>50 and characterx+75<150:
+                        jump=1
+                    if characterx+75>250 and characterx+75<350:
+                        jump=1
+                    if characterx+75>450 and characterx+75<550:
+                        jump=1
+                    if characterx+75>650 and characterx+75<750:
+                        jump=1
 
 
 
