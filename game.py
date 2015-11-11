@@ -29,7 +29,7 @@ mainscreen=True
 lifecount=2
 hurt=0   #맞음
 hurttime=0 #맞은 시간
-timer=700
+timer=0
 wcheck=0
 jump=False
 jumpturn=False
@@ -64,6 +64,28 @@ class Velkozr:
     def draw(self):
         self.image.clip_draw(0, 0, 1800,600 , self.x, self.y)
 
+class Velkozritem:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =random.randint(50,750),random.randint(120,400)
+        if Velkozritem.image==None:
+            Velkozritem.image = load_image('image\\velkoz\\velkoz r item.png')
+
+    def draw(self):
+        self.image.clip_draw(0, 0, 100,100 , self.x, self.y)
+
+class Character2:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =characterx+100,charactery+75
+        if Character2.image==None:
+            Character2.image = load_image('image\\velkoz\\Character2.png')
+
+    def draw(self):
+        self.image.clip_draw(0, 0, 50,40 , self.x, self.y)
+
 dangerframe=0 #위험 프레임\
 dangerline=[0]*7#초가스 r danger 깜빡이는 프레임
 act=0#초가스r을 움직이기 위해 모든 랜덤값 6개를 다른 숫자로
@@ -77,6 +99,7 @@ velwframe=0
 velqy=[0]*3
 velqx=[0]*3
 velw2y=0
+freeze=0
 
 
 ground=None
@@ -100,7 +123,7 @@ chotype3=None
 def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     global image
     global ground,gameback,life,cho,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
-    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y,velkozr,velteam
+    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y,velkozr,velteam,zonya,character2
     #open_canvas()
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
@@ -122,6 +145,8 @@ def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
 
     velkozr=Velkozr()
     chotype3=Chotype3()
+    zonya=Velkozritem()
+    character2=Character2()
     team = [Chotype3() for i in range(30)] #초가스 e 개수
     velteam=[Velkozr() for i in range(30)]
     chotypeF= [0] * 7
@@ -146,28 +171,31 @@ def handle_events():
     global count
     global mousex
     global mousey
-    global mainscreen
+    global mainscreen,freeze
     events = get_events()
     for event in events:
         if event.type==SDL_QUIT:
-            running=False
-
-        elif event.type==SDL_KEYDOWN:
-            if event.key==SDLK_ESCAPE:
-                game_framework.quit()
-            if event.key==SDLK_SPACE:
-                 jump+=1
-            if event.key==SDLK_RIGHT:
-                characterxr=True
-            if event.key==SDLK_LEFT:
-                characterxl=True
-            if event.key==SDLK_RETURN:
-                mainscreen=True
-        elif event.type==SDL_KEYUP:
-            if event.key==SDLK_RIGHT:
-                characterxr=False
-            if event.key==SDLK_LEFT:
-                characterxl=False
+            game_framework.quit()
+        if freeze==0:
+            if event.type==SDL_KEYDOWN :
+                if event.key==SDLK_ESCAPE:
+                    game_framework.quit()
+                if event.key==SDLK_SPACE:
+                    jump+=1
+                if event.key==SDLK_RIGHT:
+                    characterxr=True
+                if event.key==SDLK_LEFT:
+                    characterxl=True
+                if event.key==SDLK_RETURN:
+                    mainscreen=True
+            elif event.type==SDL_KEYUP:
+                if event.key==SDLK_RIGHT:
+                    characterxr=False
+                if event.key==SDLK_LEFT:
+                    characterxl=False
+        if freeze==1:
+            characterxr=False
+            characterxl=False
     if characterxr==True:
         if characterx <= 680:
             characterx+=5
@@ -196,7 +224,7 @@ def draw():
     global timer
     global cho,chox,danger,dangerframe
     global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
-    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump,velteam,velkozr
+    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump,velteam,velkozr,zonya,character2,freeze
     gameback.draw(400,300)#검은 배경
     if type==0:
         timer+=1
@@ -423,7 +451,7 @@ def draw():
 
         ground.draw(400,300)
 
-        if timer>320 and timer<650:
+        if timer>320 and timer<600:
             if 875+velw2y >525:
                 velw2y-=50
             velw2.draw(400,875+velw2y,800,600)
@@ -510,23 +538,36 @@ def draw():
                         jump=1
                     if characterx+75>650 and characterx+75<750:
                         jump=1
-        if timer>=700:
+        if timer>600 and timer<700:
+            zonya.draw()
+            if characterx+100>zonya.x-50 and characterx+100<zonya.x+50:
+                if charactery+75<zonya.y+30 and charactery+75>zonya.y-70:
+                    freeze=1
+                    hurt=-1
+
+        if timer>=700 and timer<1340:
             for i in range(0,30):
                 if timer>700+(20*i) and timer<720+(20*i):
                     velteam[i].draw()
-                    if charactery+75<velteam[i].y+200 and charactery+75>velteam[i].y-100+200 and hurt==0:#충돌체크 조금만 더
+                    if charactery+75<velteam[i].y+200+100 and charactery+75>velteam[i].y-100+200 and hurt==0:#충돌체크 조금만 더
                         lifecount-=1
                         hurt=1
                         hurttime=timer
+            if timer>1320:
+                freeze=0
 
 
-
-
-
-
-
-
-
+        if timer>1340:
+            timer=0
+            type=random.randint(0,2)
+            while type==1:
+                type=random.randint(0,2)
+            hurt=0
+            for i in range(0,3):
+                velqframe[i]=0
+                velq[i]=random.randint(0,7)*100
+                velqy[i]=0
+                velqx[i]=0
 
 
 
