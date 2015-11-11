@@ -36,7 +36,7 @@ jumpturn=False
 running=True
 characterx=0
 charactery=0
-type= 1 #random.randrange(1,3)%3
+type= 0 #random.randrange(1,3)%3
 count=0;
 four=4
 
@@ -313,8 +313,15 @@ def draw():
             hurt=0
         if timer ==1080:
             timer=0
-            type=random.randint(1,2)
+            type=0 #random.randint(1,2)
             hurt=0
+            choq=0
+            chox=0
+            wframe=0
+            wcheck=0
+            for i in range(0,30):
+                team[i].y= random.randint(100, 700)+600
+
 
 
 
@@ -568,6 +575,7 @@ def draw():
                 velq[i]=random.randint(0,7)*100
                 velqy[i]=0
                 velqx[i]=0
+                velx=0
 
 
 
