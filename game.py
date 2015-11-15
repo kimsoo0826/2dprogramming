@@ -7,6 +7,7 @@ import sys
 sys.path.append('../LabsAll/Labs')
 
 import random
+import math
 import json
 import os
 
@@ -36,7 +37,7 @@ jumpturn=False
 running=True
 characterx=0
 charactery=0
-type= 0 #random.randrange(1,3)%3
+type= random.randrange(0,3)%3
 count=0;
 four=4
 
@@ -75,16 +76,119 @@ class Velkozritem:
     def draw(self):
         self.image.clip_draw(0, 0, 100,100 , self.x, self.y)
 
-class Character2:
+class Pidulbat:
     image =None
 
     def __init__(self):
-        self.x, self.y =characterx+100,charactery+75
-        if Character2.image==None:
-            Character2.image = load_image('image\\velkoz\\Character2.png')
+        self.x, self.y =random.randint(100,700),550
+        self.frame=0
+        self.plusx=5
+        self.plusy=5
+        if Pidulbat.image==None:
+            Pidulbat.image = load_image('image\\pidul\\pidul bat.png')
+
+    def update(self):
+        self.x-=self.plusx
+        self.y-=self.plusy
+
+        if self.x<50:
+            self.plusx*=-1
+        if self.x>750:
+            self.plusx*=-1
+        if self.y>550:
+            self.plusy*=-1
+        if self.y<110:
+            self.plusy*=-1
+
+        if self.plusx>0:
+            if self.plusy>0:
+                self.frame=0
+            else:
+                self.frame=3
+        else:
+            if self.plusy>0:
+                self.frame=1
+            else:
+                self.frame=2
+
 
     def draw(self):
-        self.image.clip_draw(0, 0, 50,40 , self.x, self.y)
+        self.image.clip_draw(100*self.frame, 0, 100,100 , self.x, self.y)
+
+class Movedanger:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =random.randint(100,700),110
+        self.frame=0
+        if Movedanger.image==None:
+            Movedanger.image = load_image('image\\danger.png')
+    def update(self):
+        global timer,characterx,charactery
+        self.frame=(self.frame+1)%4
+        if characterx+100>self.x:
+            self.x+=15
+        elif characterx+100<self.x-50:
+            self.x-=15
+        if charactery+75>self.y:
+            self.y+=15
+        else:
+            self.y-=15
+
+
+    def draw(self):
+        self.image.clip_draw(0, 50*self.frame, 300,50 , self.x, self.y,100,100)
+
+class Swingbat:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =random.randint(100,700),random.randint(100,1000)+500
+        self.angle=random.randint(0,360)
+        if Swingbat.image==None:
+            Swingbat.image = load_image('image\\pidul\\swing bat.png')
+    def update(self):
+        self.angle+=2
+        self.x+=10*math.cos(math.pi*(self.angle/180))
+        self.y-=3
+
+
+    def draw(self):
+        self.image.clip_draw(0,0, 100,50 , self.x, self.y)
+
+
+class Bigbox:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =600,500
+        if Bigbox.image==None:
+            Bigbox.image = load_image('image\\pidul\\big box.png')
+
+    def update(self):
+        if self.y>200:
+            self.y-=50
+
+    def draw(self):
+        self.image.clip_draw(0,0, 400,300 , self.x, self.y)
+
+class Littlebox:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =520+random.randint(0,280),210
+        self.fall=25+random.randint(0,10)
+        if Littlebox.image==None:
+            Littlebox.image = load_image('image\\pidul\\little box.png')
+
+    def update(self):
+        self.fall-=1
+        self.y+=self.fall
+        self.x-=7
+
+    def draw(self):
+        self.image.clip_draw(0,0, 100,100 , self.x, self.y)
+
 
 dangerframe=0 #위험 프레임\
 dangerline=[0]*7#초가스 r danger 깜빡이는 프레임
@@ -120,10 +224,11 @@ checktype4=None
 chotype4frame=None
 chotype3=None
 
-def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
+def enter():#안되면 되게해라-앞의 변수 전역 global
     global image
     global ground,gameback,life,cho,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
-    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y,velkozr,velteam,zonya,character2
+    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y,velkozr,velteam,zonya,pidulbat,pidulbatteam,movedanger,drain,drainframe,fear
+    global swingbat, bigbox, littlebox
     #open_canvas()
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
@@ -139,6 +244,8 @@ def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     velq3=load_image('image\\velkoz\\velkozq3.png')#벨코즈 첫번째 스킬
     velw1=load_image('image\\velkoz\\velkozw.png')#벨코즈 두번째 스킬
     velw2=load_image('image\\velkoz\\velkoz w down.png')#벨코즈 두번째 스킬
+    drain=load_image('image\\pidul\\pidul w.png')#피들스틱 흡수
+    fear=load_image('image\\pidul\\fear.png')#피들스틱 공포
     danger=load_image('image\\danger.png')
     danger2=load_image('image\\danger2.png')
     character=load_image('image\\character.png')
@@ -146,12 +253,18 @@ def enter():#ㅅㅂ 안되면 되게해라-앞의 변수 전역 global
     velkozr=Velkozr()
     chotype3=Chotype3()
     zonya=Velkozritem()
-    character2=Character2()
+    pidulbat=Pidulbat()
+    movedanger=Movedanger()
     team = [Chotype3() for i in range(30)] #초가스 e 개수
     velteam=[Velkozr() for i in range(30)]
+    pidulbatteam=[Pidulbat() for i in range(5)]#튕기는 박쥐 5마리
     chotypeF= [0] * 7
     checktype4=[0]*7
     chotype4frame=[0]*7
+    drainframe=0
+    bigbox=Bigbox()
+    littlebox=[Littlebox() for i in range(20)]
+    swingbat=[Swingbat() for i in range(10)]
 
 
 
@@ -183,16 +296,29 @@ def handle_events():
                 if event.key==SDLK_SPACE:
                     jump+=1
                 if event.key==SDLK_RIGHT:
-                    characterxr=True
+                    if not(type==2 and timer>1500 and timer<2100):
+                        characterxr=True
+                    else:
+                        characterxl=True
                 if event.key==SDLK_LEFT:
-                    characterxl=True
+                    if not(type==2 and timer>1500 and timer<2100):
+                        characterxl=True
+                    else:
+                        characterxr=True
                 if event.key==SDLK_RETURN:
                     mainscreen=True
             elif event.type==SDL_KEYUP:
                 if event.key==SDLK_RIGHT:
-                    characterxr=False
+                    if not(type==2 and timer>1500 and timer<2100):
+                        characterxr=False
+                    else:
+                        characterxl=False
+
                 if event.key==SDLK_LEFT:
-                    characterxl=False
+                    if not(type==2 and timer>1500 and timer<2100):
+                        characterxl=False
+                    else:
+                        characterxr=False
         if freeze==1:
             characterxr=False
             characterxl=False
@@ -224,7 +350,8 @@ def draw():
     global timer
     global cho,chox,danger,dangerframe
     global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
-    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump,velteam,velkozr,zonya,character2,freeze
+    global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump,velteam,velkozr,zonya,freeze,pidulbat,pidulbatteam,drainframe
+    global movedanger,drain,bigbox,littlebox
     gameback.draw(400,300)#검은 배경
     if type==0:
         timer+=1
@@ -313,7 +440,9 @@ def draw():
             hurt=0
         if timer ==1080:
             timer=0
-            type=random.randint(1,2)
+            type=random.randint(1,3)%3
+            while type==0:
+                type=random.randint(1,3)%3
             hurt=0
             choq=0
             chox=0
@@ -566,9 +695,9 @@ def draw():
 
         if timer>1340:
             timer=0
-            type=random.randint(0,2)
+            type=random.randint(0,5)#3
             while type==1:
-                type=random.randint(0,2)
+                type=random.randint(0,5)%3
             hurt=0
             for i in range(0,3):
                 velqframe[i]=0
@@ -584,8 +713,90 @@ def draw():
         pi.draw(950+pix,250)#피들스틱 캐릭터
         if pix>-500:
             pix-=10
-        if timer>0:
+        if hurt==1 and timer>=hurttime+100:
+            hurt=0
+        if timer>100:
+            for i in range(0,5):
+                if timer>100+i*100 and timer<600+i*100:
+                    pidulbatteam[i].update()
+                    pidulbatteam[i].draw()
 
+                    if characterx+100>pidulbatteam[i].x-50 and characterx+100<pidulbatteam[i].x+50 and hurt==0:
+                        if charactery+75<pidulbatteam[i].y and charactery+75>pidulbatteam[i].y-100:
+                            lifecount-=1
+                            hurt=1
+                            hurttime=timer
+        if timer>1000 and timer<1500:
+            if timer%4==0 and timer<1200:
+                movedanger.update()
+            if timer<1200:
+                movedanger.draw()
+            if timer>1200:
+                drain.clip_draw(800*drainframe,0,800,800,movedanger.x+300,movedanger.y+300)
+                if timer%4==0:
+                    drainframe=(drainframe+1)%8
+                if characterx+100>movedanger.x-75 and characterx+100<movedanger.x+150 and charactery+75>movedanger.y-50 and hurt==0:
+                    lifecount-=1
+                    hurt=1
+                    hurttime=timer
+        if timer>1500 and timer<2100:
+            fear.draw(characterx+100,charactery+125,100,100)
+            for i in range (0,10):
+                swingbat[i].update()
+                swingbat[i].draw()
+
+                if characterx+100>swingbat[i].x-50 and characterx+100<swingbat[i].x+75 and hurt==0:
+                    if charactery+75<swingbat[i].y and charactery+75>swingbat[i].y-50:
+                        lifecount-=1
+                        hurt=1
+                        hurttime=timer
+        if timer>2100 and timer <2900:
+            bigbox.update()
+            bigbox.draw()
+
+            if characterx+100>bigbox.x-150 and characterx+100<bigbox.x+300 and \
+                            charactery+75>bigbox.y-150 and charactery+75<bigbox.y and hurt==0:
+                lifecount-=1
+                hurt=1
+                hurttime=timer
+
+            if timer>2200 :
+                for i in range(0,20):
+                    if timer>2200+i*25 and timer<2400+i*100:
+                        littlebox[i].update()
+                        littlebox[i].draw()
+
+                        if characterx+100>littlebox[i].x-60 and characterx+100<littlebox[i].x+50 and  hurt==0:
+                            if charactery+75<littlebox[i].y+50 and charactery+75>littlebox[i].y-50  :
+                                lifecount-=1
+                                hurt=1
+                                hurttime=timer
+
+        if timer==2900:
+            timer=0
+            pix=0
+            for i in range(0,5):
+                pidulbatteam[i].x=random.randint(100,700)
+                pidulbatteam[i].y=550
+                pidulbatteam[i].frame=0
+                pidulbatteam[i].plusx=5
+                pidulbatteam[i].plusy=5
+            movedanger.x==random.randint(100,700)
+            movedanger.y=110
+            drainframe=0
+            bigbox.x=600
+            bigbox.y=500
+            for i in range(0,10):
+                swingbat[i].x=random.randint(100,700)
+                swingbat[i].y=random.randint(100,1000)+500
+                swingbat[i].angle=random.randint(0,360)
+            for i in range(0,20):
+                littlebox[i].x=520+random.randint(0,280)
+                littlebox[i].y=210
+                littlebox[i].fall=25+random.randint(0,10)
+            type=random.randint(0,3)%3
+            while type==2:
+                type=random.randint(0,3)%3
 
 
     if hurt==0:
@@ -607,6 +818,7 @@ def draw():
 
 
 def update():
+
     delay(0.01)
 
 
