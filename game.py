@@ -313,7 +313,7 @@ def draw():
             hurt=0
         if timer ==1080:
             timer=0
-            type=0 #random.randint(1,2)
+            type=random.randint(1,2)
             hurt=0
             choq=0
             chox=0
@@ -580,9 +580,13 @@ def draw():
 
 
     if type==2:
+        timer+=1
         pi.draw(950+pix,250)#피들스틱 캐릭터
         if pix>-500:
             pix-=10
+        if timer>0:
+
+
 
     if hurt==0:
         character.draw(100+characterx,75+charactery,50,40)
