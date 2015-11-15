@@ -443,6 +443,9 @@ def draw():
             type=random.randint(1,3)%3
             while type==0:
                 type=random.randint(1,3)%3
+            for i in range(0,7):
+                chotype4frame[i]=0
+                chotypeF[i]=random.randint(0,7)
             hurt=0
             choq=0
             chox=0
@@ -695,7 +698,7 @@ def draw():
 
         if timer>1340:
             timer=0
-            type=random.randint(0,5)#3
+            type=random.randint(0,5)%3
             while type==1:
                 type=random.randint(0,5)%3
             hurt=0
@@ -705,6 +708,8 @@ def draw():
                 velqy[i]=0
                 velqx[i]=0
                 velx=0
+                zonya.x=random.randint(50,750)
+                zonya.y=random.randint(120,400)
 
 
 
