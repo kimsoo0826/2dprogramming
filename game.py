@@ -69,6 +69,56 @@ class Danger1:
                     if timer%4==0:
                         dangerline[i]=(dangerline[i]+1)%4
 
+class Chotype1:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =0,0
+        self.frame=0
+        if Chotype1.image==None:
+            Chotype1.image = load_image('image\\chogas\\chotype1.png')
+
+    def update(self):
+        global timer
+        if timer%4==0:
+            self.frame=(self.frame+1)%4
+        self.y+=25-(timer-150)
+    def draw(self):
+        global timer,hurt,hurttime,charactery,lifecount
+        if timer>150 and timer<300:
+            self.image.draw(400,-50+self.y)
+        if 75+charactery<self.y and hurt==0:
+                lifecount-=1
+                hurt=1
+                hurttime=timer
+
+class Chotype2:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =0,0
+        self.frame=0
+        self.check=0
+        if Chotype2.image==None:
+            Chotype2.image = load_image('image\\chogas\\chotype2.png')
+
+    def update(self):
+        global timer
+        if timer%2==0 and self.frame<=7 and self.check==0:
+            self.frame=(self.frame+1)
+        if self.frame==8:
+            self.check=1
+        if self.check==1 and self.frame>0 and timer%2==0:
+            self.frame=(self.frame-1)
+    def draw(self):
+        global timer,lifecount,hurt,lifecount,hurttime,characterx
+        self.image.clip_draw(self.frame*100,0,100,100,450,325,700,500)
+
+        if 100+characterx>800-(100*self.frame) and hurt==0:
+            lifecount-=1
+            hurt=1
+            hurttime=timer
+
 class Chotype3:
     image =None
 
@@ -81,7 +131,15 @@ class Chotype3:
         self.y -=5
 
     def draw(self):
+        global characterx,charactery,hurt,lifecount,hurttime,timer
         self.image.clip_draw(0, 0, 50, 100, self.x, self.y)
+
+        if self.x-50<characterx+100 and self.x+50>characterx+100:
+            if self.y>75+charactery and self.y-75<75+charactery and hurt==0:
+                lifecount-=1
+                hurt=1
+                hurttime=timer
+
 class Velkozr:
     image =None
 
@@ -264,8 +322,8 @@ def enter():#안되면 되게해라-앞의 변수 전역 global
     cho=load_image('image\\chogas\\chogas.png')#초가스 등장모습
     vel=load_image('image\\velkoz\\velkoz.png')#벨코즈 등장모습
     pi=load_image('image\\pidul\\pidul.png')#피들스틱 등장모습
-    chotype1=load_image('image\\chogas\\chotype1.png')#초가스 첫번째 스킬
-    chotype2=load_image('image\\chogas\\chotype2.png')#초가스 두번째 스킬)
+    chotype1=Chotype1()
+    chotype2=Chotype2()
     chotype4=load_image('image\\chogas\\chotype4.png')#초가스 네번째 스킬
     velq1=load_image('image\\velkoz\\velkozq.png')#벨코즈 첫번째 스킬
     velq2=load_image('image\\velkoz\\velkozq2.png')#벨코즈 첫번째 스킬
@@ -390,45 +448,20 @@ def draw():
             danger.update()
             danger.draw()
         if timer>150 and timer<=300: #기술 등장
-            chotype1.draw(400,-50+choq)  #최대높이 350 가려지는 높이 -50
-            choq+=25-(timer-150)
-
-            if 75+charactery<choq and hurt==0:
-                lifecount-=1
-                hurt=1
-                hurttime=timer
-
+            chotype1.update()
+            chotype1.draw()
         if timer>300 and timer<=400:
             danger.update()
             danger.draw()
 
         if timer>400 and timer<550:  #w 완료
-            #chotype2.clip_draw(0,0,800,600,400,300)
-            chotype2.clip_draw(wframe*100,0,100,100,450,325,700,500)
-            if timer%2==0 and wframe<=7 and wcheck==0:
-                wframe=(wframe+1)
-            if wframe==8:
-                wcheck=1
-            if wcheck==1 and wframe>0 and timer%2==0:
-                wframe=(wframe-1)
-
-            if 100+characterx>800-(100*wframe) and hurt==0:
-                lifecount-=1
-                hurt=1
-                hurttime=timer
-
-
+            chotype2.update()
+            chotype2.draw()
 
         if timer>550 and timer<900:#초가스e시작
             for chotype3 in team:
                 chotype3.update()
                 chotype3.draw()
-
-                if chotype3.x-50<characterx+100 and chotype3.x+50>characterx+100:
-                    if chotype3.y>75+charactery and chotype3.y-75<75+charactery and hurt==0:
-                        lifecount-=1
-                        hurt=1
-                        hurttime=timer
 
 
         if timer>=900:   #초가스 r 시작
