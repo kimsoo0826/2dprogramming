@@ -37,9 +37,37 @@ jumpturn=False
 running=True
 characterx=0
 charactery=0
-type= random.randrange(0,3)%3
+type=0# random.randrange(0,3)%3
 count=0;
 four=4
+
+class Danger1:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =0,0
+        self.frame=0
+        if Danger1.image==None:
+            Danger1.image = load_image('image\\danger.png')
+
+    def update(self):
+        global timer
+        if timer%4==0:
+            self.frame=(self.frame+1)%4
+
+
+    def draw(self):
+        global chotypeF, dangerline,timer
+        if type==0:
+            if timer<150 and timer>40:
+                self.image.clip_draw(0,self.frame*50,800,50,400,150,800,200)
+            if timer<400 and timer>300:
+                self.image.clip_draw(0,self.frame*50,800,50,450,300,700,600)
+            if timer<950 and timer>900:
+                for i in range(0,7):
+                    self.image.clip_draw(0,dangerline[i]*50,800,50,100+200*(chotypeF[i]%4),460-270*(chotypeF[i]//4),200,270)
+                    if timer%4==0:
+                        dangerline[i]=(dangerline[i]+1)%4
 
 class Chotype3:
     image =None
@@ -246,10 +274,10 @@ def enter():#안되면 되게해라-앞의 변수 전역 global
     velw2=load_image('image\\velkoz\\velkoz w down.png')#벨코즈 두번째 스킬
     drain=load_image('image\\pidul\\pidul w.png')#피들스틱 흡수
     fear=load_image('image\\pidul\\fear.png')#피들스틱 공포
-    danger=load_image('image\\danger.png')
     danger2=load_image('image\\danger2.png')
     character=load_image('image\\character.png')
 
+    danger=Danger1()
     velkozr=Velkozr()
     chotype3=Chotype3()
     zonya=Velkozritem()
@@ -358,10 +386,9 @@ def draw():
         cho.draw(1100+chox,300)#초가스 캐릭터
         if chox>-400:
             chox-=10
-        if timer<150 and timer>40: #첫번째 경고
-            danger.clip_draw(0,dangerframe*50,800,50,400,150,800,200)
-            if timer%4==0:
-                dangerframe=(dangerframe+1)%4
+        if timer<150 and timer>40:
+            danger.update()
+            danger.draw()
         if timer>150 and timer<=300: #기술 등장
             chotype1.draw(400,-50+choq)  #최대높이 350 가려지는 높이 -50
             choq+=25-(timer-150)
@@ -371,12 +398,9 @@ def draw():
                 hurt=1
                 hurttime=timer
 
-
-
         if timer>300 and timer<=400:
-            danger.clip_draw(0,dangerframe*50,800,50,450,300,700,600)
-            if timer%4==0:
-                dangerframe=(dangerframe+1)%4
+            danger.update()
+            danger.draw()
 
         if timer>400 and timer<550:  #w 완료
             #chotype2.clip_draw(0,0,800,600,400,300)
@@ -417,10 +441,8 @@ def draw():
                 checktype4[i]=1
 
             if timer<950:
-                for i in range(0,7):
-                    danger.clip_draw(0,dangerline[i]*50,800,50,100+200*(chotypeF[i]%4),460-270*(chotypeF[i]//4),200,270)
-                    if timer%4==0:
-                        dangerline[i]=(dangerline[i]+1)%4
+                danger.update()
+                danger.draw()
 
             if timer>950 and timer<980 :
 
@@ -616,9 +638,6 @@ def draw():
                         jump=1
                     if characterx+75>750 and characterx+75<850:
                         jump=1
-
-
-
 
 
             if timer>389 and timer<=453:
