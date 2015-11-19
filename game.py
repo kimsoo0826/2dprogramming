@@ -19,7 +19,7 @@ name = "MainState"
 image = None
 
 
-chox=0 #초가스 머리등장
+
 velx=0 #벨코즈 머리등장
 pix=0;#피들스틱 머리등장
 choq=0 #초가스 q 올라오는 y값
@@ -68,6 +68,20 @@ class Danger1:
                     self.image.clip_draw(0,dangerline[i]*50,800,50,100+200*(chotypeF[i]%4),460-270*(chotypeF[i]//4),200,270)
                     if timer%4==0:
                         dangerline[i]=(dangerline[i]+1)%4
+class Chogas:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =0,0
+        if Chogas.image==None:
+            Chogas.image = load_image('image\\chogas\\chogas.png')
+
+    def update(self):
+        if self.x>-400:
+            self.x-=10
+    def draw(self):
+         self.image.draw(1100+self.x,300)#초가스 캐릭터
+
 
 class Chotype1:
     image =None
@@ -139,6 +153,28 @@ class Chotype3:
                 lifecount-=1
                 hurt=1
                 hurttime=timer
+
+class Chotype4:
+    image =None
+
+    def __init__(self):
+        if Chotype4.image==None:
+            Chotype4.image = load_image('image\\chogas\\chotype4.png')
+
+    def draw(self):
+        global chotypeF,chotype4frame,chotypeF,characterx,charactery,lifecount,hurt,hurttime
+        for i in range(0,7):
+            self.image.clip_draw(chotype4frame[i]*100,0,100,100,100+200*(chotypeF[i]%4),460-270*(chotypeF[i]//4),200,270)
+            if timer%4==0:
+                chotype4frame[i]=(chotype4frame[i]+1)%8
+
+            if 100+characterx<250+200*(chotypeF[i]%4) and 100+characterx>50+200*(chotypeF[i]%4) and hurt==0:
+                if 75+charactery<560-270*(chotypeF[i]//4) and 75+charactery>290-270*(chotypeF[i]//4):
+                    lifecount-=1
+                    hurt=1
+                    hurttime=timer
+
+
 
 class Velkozr:
     image =None
@@ -312,19 +348,20 @@ chotype3=None
 
 def enter():#안되면 되게해라-앞의 변수 전역 global
     global image
-    global ground,gameback,life,cho,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
+    global ground,gameback,life,chogas,vel,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
     global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y,velkozr,velteam,zonya,pidulbat,pidulbatteam,movedanger,drain,drainframe,fear
     global swingbat, bigbox, littlebox
     #open_canvas()
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
     life=load_image('image\\life.png')#생명
-    cho=load_image('image\\chogas\\chogas.png')#초가스 등장모습
+    chogas=Chogas()
     vel=load_image('image\\velkoz\\velkoz.png')#벨코즈 등장모습
     pi=load_image('image\\pidul\\pidul.png')#피들스틱 등장모습
     chotype1=Chotype1()
     chotype2=Chotype2()
-    chotype4=load_image('image\\chogas\\chotype4.png')#초가스 네번째 스킬
+    chotype3=Chotype3()
+    chotype4=Chotype4()
     velq1=load_image('image\\velkoz\\velkozq.png')#벨코즈 첫번째 스킬
     velq2=load_image('image\\velkoz\\velkozq2.png')#벨코즈 첫번째 스킬
     velq3=load_image('image\\velkoz\\velkozq3.png')#벨코즈 첫번째 스킬
@@ -337,7 +374,7 @@ def enter():#안되면 되게해라-앞의 변수 전역 global
 
     danger=Danger1()
     velkozr=Velkozr()
-    chotype3=Chotype3()
+
     zonya=Velkozritem()
     pidulbat=Pidulbat()
     movedanger=Movedanger()
@@ -434,16 +471,15 @@ def draw():
     clear_canvas()
     global gameback
     global timer
-    global cho,chox,danger,dangerframe
+    global chogas,danger,dangerframe
     global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,vel,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
     global velq,velq1,velq2,velq3,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump,velteam,velkozr,zonya,freeze,pidulbat,pidulbatteam,drainframe
     global movedanger,drain,bigbox,littlebox
     gameback.draw(400,300)#검은 배경
     if type==0:
         timer+=1
-        cho.draw(1100+chox,300)#초가스 캐릭터
-        if chox>-400:
-            chox-=10
+        chogas.update()
+        chogas.draw()
         if timer<150 and timer>40:
             danger.update()
             danger.draw()
@@ -478,35 +514,24 @@ def draw():
                 danger.draw()
 
             if timer>950 and timer<980 :
+                    chotype4.draw()
 
-
-                for i in range(0,7):
-                    chotype4.clip_draw(chotype4frame[i]*100,0,100,100,100+200*(chotypeF[i]%4),460-270*(chotypeF[i]//4),200,270)
-                    if timer%4==0:
-                        chotype4frame[i]=(chotype4frame[i]+1)%8
-
-                for i in range(0,7):#초가스 r 충돌체크
-                    if 100+characterx<250+200*(chotypeF[i]%4) and 100+characterx>50+200*(chotypeF[i]%4) and hurt==0:
-                        if 75+charactery<560-270*(chotypeF[i]//4) and 75+charactery>290-270*(chotypeF[i]//4) and hurt==0:
-                            lifecount-=1
-                            hurt=1
-                            hurttime=timer
         if hurt==1 and timer>=hurttime+100:
             hurt=0
         if timer ==1080:
             timer=0
-            type=random.randint(1,3)%3
-            while type==0:
-                type=random.randint(1,3)%3
+            type=0
             for i in range(0,7):
                 chotype4frame[i]=0
                 chotypeF[i]=random.randint(0,7)
             hurt=0
-            choq=0
-            chox=0
-            wframe=0
-            wcheck=0
+            chogas.x=0
+            chotype1.y=0
+            chotype2.x, chotype2.y =0,0
+            chotype2.frame=0
+            chotype2.check=0
             for i in range(0,30):
+                team[i].x=random.randint(0, 800)
                 team[i].y= random.randint(100, 700)+600
 
 
