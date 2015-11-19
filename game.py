@@ -215,7 +215,7 @@ class Velkoztype1:
             Velkoztype1.image3 = load_image('image\\velkoz\\velkoztype1-3.png')
 
     def update(self):
-        global timer, velqframe,velqx
+        global timer
         self.timer+=1
         if self.timer%8==0:
             self.frame=(self.frame+1)%4
@@ -233,7 +233,7 @@ class Velkoztype1:
             self.dangerframe=(self.dangerframe+1)%4
 
     def draw(self):
-        global timer,velqframe,hurt,hurttime,lifecount,characterx,charactery,velqx,velq
+        global timer,hurt,hurttime,lifecount,characterx,charactery
 
         if self.timer>10 and self.timer<320:
             if self.timer<50:
@@ -326,27 +326,31 @@ class Velkoztype2:
                 if characterx+75>650 and characterx+75<750:
                     jump=1
 
-class Velkoz:
-    image =None
+class Velkoztype3:
+    sandglass =None
+    beam=None
 
     def __init__(self):
-        self.x, self.y =0,random.randint(-90,300)
-        if Velkozr.image==None:
-            Velkozr.image = load_image('image\\velkoz\\velkoztype3-1.png')
+        self.sandglassx, self.sandglassy =random.randint(50,750),random.randint(120,400)
+        self.x,self.y=0,random.randint(-90,300)
+        if Velkoztype3.beam==None:
+            Velkoztype3.beam = load_image('image\\velkoz\\velkoztype3-1.png')
+        if Velkoztype3.sandglass==None:
+            Velkoztype3.sandglass = load_image('image\\velkoz\\velkoztype3-2.png')
 
+    def update(self):
+        global timer,characterx,charactery,freeze,hurt
+        if timer>600 and timer<700:
+            if characterx+100>self.sandglassx-50 and characterx+100<self.sandglassx+50:
+                if charactery+75<self.sandglassy+30 and charactery+75>self.sandglassy-70:
+                    freeze=1
+                    hurt=-1
     def draw(self):
-        self.image.clip_draw(0, 0, 1800,600 , self.x, self.y)
+        if timer>600 and timer<700:
+            self.sandglass.clip_draw(0, 0, 100,100 , self.sandglassx, self.sandglassy)
+        else:
+            self.beam.clip_draw(0, 0, 1800,600 , self.x, self.y)
 
-class Velkozritem:
-    image =None
-
-    def __init__(self):
-        self.x, self.y =random.randint(50,750),random.randint(120,400)
-        if Velkozritem.image==None:
-            Velkozritem.image = load_image('image\\velkoz\\velkoztype3-2.png')
-
-    def draw(self):
-        self.image.clip_draw(0, 0, 100,100 , self.x, self.y)
 
 class Pidulbat:
     image =None
@@ -520,13 +524,12 @@ def enter():#안되면 되게해라-앞의 변수 전역 global
     character=load_image('image\\character.png')
 
     danger=Danger1()
-    velkozr=Velkozr()
 
-    zonya=Velkozritem()
+
     pidulbat=Pidulbat()
     movedanger=Movedanger()
     team = [Chotype3() for i in range(30)] #초가스 e 개수
-    velteam=[Velkozr() for i in range(30)]
+    velteam=[Velkoztype3() for i in range(30)]
     pidulbatteam=[Pidulbat() for i in range(5)]#튕기는 박쥐 5마리
     chotypeF= [0] * 7
     checktype4=[0]*7
@@ -719,11 +722,8 @@ def draw():
             velkoztype2.draw()
 
         if timer>600 and timer<700:
-            zonya.draw()
-            if characterx+100>zonya.x-50 and characterx+100<zonya.x+50:
-                if charactery+75<zonya.y+30 and charactery+75>zonya.y-70:
-                    freeze=1
-                    hurt=-1
+            velteam[0].update()
+            velteam[0].draw()
 
         if timer>=700 and timer<1340:
             for i in range(0,30):
@@ -738,18 +738,24 @@ def draw():
 
         if timer>1340:
             timer=0
-            type=random.randint(0,5)%3
-            while type==1:
-                type=random.randint(0,5)%3
+            type=1#random.randint(0,5)%3
+            #while type==1:
+                #type=random.randint(0,5)%3
             hurt=0
-            for i in range(0,3):
-                velqframe[i]=0
-                velq[i]=random.randint(0,7)*100
-                velqy[i]=0
-                velqx[i]=0
-                velx=0
-                zonya.x=random.randint(50,750)
-                zonya.y=random.randint(120,400)
+            velkoz.x=0
+            for i in range(0,5):
+                velkoztype1[i].x, velkoztype1[i].y =random.randint(1,7)*100,0
+                velkoztype1[i].movex=0
+                velkoztype1[i].timer=0
+                velkoztype1[i].frame=0
+                velkoztype1[i].dangerframe=0
+            velkoztype2.downx, velkoztype2.downy =0,0
+            velkoztype2.frame=0
+            for i in range(0,30):
+                velteam[i].sandglassx, velteam[i].sandglassy =random.randint(50,750),random.randint(120,400)
+                velteam[i].x,velteam[i].y=0,random.randint(-90,300)
+
+
 
 
 
