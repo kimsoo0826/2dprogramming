@@ -36,7 +36,7 @@ jumpturn=False
 running=True
 characterx=0
 charactery=0
-type=random.randrange(0,3)%3
+type=2#random.randrange(0,3)%3
 
 
 class Danger1:
@@ -45,12 +45,14 @@ class Danger1:
     def __init__(self):
         self.x, self.y =0,0
         self.frame=0
+        self.timer=0
         if Danger1.image==None:
             Danger1.image = load_image('image\\danger.png')
 
     def update(self):
         global timer
-        if timer%4==0:
+        self.timer+=1
+        if self.timer%4==0:
             self.frame=(self.frame+1)%4
 
 
@@ -213,7 +215,6 @@ class Velkoztype1:
             Velkoztype1.image3 = load_image('image\\velkoz\\velkoztype1-3.png')
 
     def update(self):
-        global timer
         self.timer+=1
         if self.timer%8==0:
             self.frame=(self.frame+1)%4
@@ -527,7 +528,7 @@ checktype4=None
 chotype4frame=None
 chotype3=None
 
-def enter():#안되면 되게해라-앞의 변수 전역 global
+def enter():
     global ground,gameback,life,pidul,character,title
     global chogas,chotype1,chotype2,chotype4,danger,team,chotypeF,checktype4,chotype4frame,chotype3
     global velkoz,danger2,velkozr,velkoztype3,velkoztype1,velkoztype2
@@ -651,47 +652,126 @@ def draw():
     gameback.draw(400,300)#검은 배경
 
     if type==0:
-        timer+=1
-        chogas.update()
         chogas.draw()
         if timer<150 and timer>40:
-            danger.update()
             danger.draw()
         if timer>150 and timer<=300: #기술 등장
-            chotype1.update()
             chotype1.draw()
         if timer>300 and timer<=400:
-            danger.update()
             danger.draw()
+        if timer>400 and timer<550:  #w 완료
+            chotype2.draw()
+        if timer>550 and timer<900:#초가스e시작
+            for chotype3 in team:
+                chotype3.draw()
+        if timer<950:
+            danger.draw()
+        if timer>950 and timer<980 :
+            chotype4.draw()
 
+
+
+
+    if type==1:
+        velkoz.draw()
+
+        if timer>10 and timer<320:
+            velkoztype1[0].draw()
+        if timer>30 and timer<320:
+            velkoztype1[1].draw()
+        if timer>50 and timer<320:
+            velkoztype1[2].draw()
+        if timer>70 and timer<320:
+            velkoztype1[3].draw()
+        if timer>90 and timer<320:
+            velkoztype1[4].draw()
+
+        ground.draw(400,300)
+
+        if timer>320 and timer<600:
+            velkoztype2.draw()
+
+        if timer>600 and timer<700:
+            velkoztype3[0].draw()
+
+        if timer>=700 and timer<1340:
+            for i in range(0,30):
+                if timer>700+(20*i) and timer<720+(20*i):
+                    velkoztype3[i].draw()
+
+    if type==2:
+        pidul.draw()
+
+        if timer>100:
+            for i in range(0,5):
+                if timer>100+i*100 and timer<600+i*100:
+                    pidulbat[i].draw()
+
+
+        if timer>1000 and timer<1500:
+            if timer<1200:
+                movedanger.draw()
+            if timer>1200:
+                drain.clip_draw(800*drainframe,0,800,800,movedanger.x+300,movedanger.y+300)
+
+        if timer>1500 and timer<2100:
+            fear.draw(characterx+100,charactery+125,100,100)
+            for i in range (0,10):
+                swingbat[i].draw()
+
+        if timer>2100 and timer <2900:
+            bigbox.draw()
+
+            if timer>2200 :
+                for i in range(0,20):
+                    if timer>2200+i*25 and timer<2400+i*100:
+                        littlebox[i].draw()
+
+
+    if hurt==0:
+        character.draw(100+characterx,75+charactery,50,40)
+    if hurt==1:
+        if timer%6==0:
+            character.draw(100+characterx,75+charactery,50,40)
+    if type!=1:
+       ground.draw(400,300) #땅
+
+    life.clip_draw(266*lifecount,0,266,600,150,560,300,200)
+
+    update_canvas()
+
+
+
+
+def update():
+    global gameback,characterxr,characterxl
+    global timer,lifecount,hurt,type,hurttime,life,character,ground,jump
+    global chogas,danger,chotype1,chotype2, chotype3,chotype4,team
+    global velkoz,velkoztype1,velkoztype3,danger2,freeze
+    global pidul,pidulbat,pidulbatteam,drainframe,movedanger,drain,bigbox,littlebox
+
+    if hurt==1 and timer>=hurttime+100:
+            hurt=0
+    if type==0:
+        timer+=1
+        chogas.update()
+        if timer>150 and timer<=300: #기술 등장
+            chotype1.update()
         if timer>400 and timer<550:  #w 완료
             chotype2.update()
-            chotype2.draw()
-
         if timer>550 and timer<900:#초가스e시작
             for chotype3 in team:
                 chotype3.update()
-                chotype3.draw()
-
-
-        if timer>=900:   #초가스 r 시작
-            for i in range(0,7):
-                if chotypeF[i]==0 and checktype4[i]==0:
-                    chotypeF[i]=random.randint(0,7)
+        if timer<950:
+            danger.update()
+            if timer>=900:   #초가스 r 시작
+                for i in range(0,7):
+                    if chotypeF[i]==0 and checktype4[i]==0:
+                        chotypeF[i]=random.randint(0,7)
                     for j in range(0,i-1):
                         if chotypeF[i]==chotypeF[j]:
                             chotypeF[i]=random.randint(0,7)
-                checktype4[i]=1
-
-            if timer<950:
-                danger.update()
-                danger.draw()
-
-            if timer>950 and timer<980 :
-                    chotype4.draw()
-
-        if hurt==1 and timer>=hurttime+100:
-            hurt=0
+                    checktype4[i]=1
         if timer ==1080:
             timer=0
             type=random.randint(0,3)%3
@@ -710,47 +790,26 @@ def draw():
                 team[i].x=random.randint(0, 800)
                 team[i].y= random.randint(100, 700)+600
 
-
-
-
     if type==1:
         timer+=1
         velkoz.update()
-        velkoz.draw()
-
-        if hurt==1 and timer>=hurttime+100:
-            hurt=0
-
         if timer>10 and timer<320:
             velkoztype1[0].update()
-            velkoztype1[0].draw()
         if timer>30 and timer<320:
             velkoztype1[1].update()
-            velkoztype1[1].draw()
         if timer>50 and timer<320:
             velkoztype1[2].update()
-            velkoztype1[2].draw()
         if timer>70 and timer<320:
             velkoztype1[3].update()
-            velkoztype1[3].draw()
         if timer>90 and timer<320:
             velkoztype1[4].update()
-            velkoztype1[4].draw()
-
-        ground.draw(400,300)
-
         if timer>320 and timer<600:
             velkoztype2.update()
-            velkoztype2.draw()
-
         if timer>600 and timer<700:
             velkoztype3[0].update()
-            velkoztype3[0].draw()
-
         if timer>=700 and timer<1340:
             for i in range(0,30):
                 if timer>700+(20*i) and timer<720+(20*i):
-                    velkoztype3[i].draw()
                     if charactery+75<velkoztype3[i].y+200+100 and charactery+75>velkoztype3[i].y-100+200 and hurt==0:#충돌체크 조금만 더
                         lifecount-=1
                         hurt=1
@@ -777,56 +836,40 @@ def draw():
                 velkoztype3[i].sandglassx, velkoztype3[i].sandglassy =random.randint(50,750),random.randint(120,400)
                 velkoztype3[i].x,velkoztype3[i].y=0,random.randint(-90,300)
 
-
-
     if type==2:
         timer+=1
         pidul.update()
-        pidul.draw()
-        if hurt==1 and timer>=hurttime+100:
-            hurt=0
         if timer>100:
             for i in range(0,5):
                 if timer>100+i*100 and timer<600+i*100:
                     pidulbat[i].update()
-                    pidulbat[i].draw()
-
-
         if timer>1000 and timer<1500:
             if timer%4==0 and timer<1200:
                 movedanger.update()
-            if timer<1200:
-                movedanger.draw()
             if timer>1200:
-                drain.clip_draw(800*drainframe,0,800,800,movedanger.x+300,movedanger.y+300)
                 if timer%4==0:
                     drainframe=(drainframe+1)%8
                 if characterx+100>movedanger.x-75 and characterx+100<movedanger.x+150 and charactery+75>movedanger.y-50 and hurt==0:
                     lifecount-=1
                     hurt=1
                     hurttime=timer
-        if timer>1500 and timer<2100:
-            fear.draw(characterx+100,charactery+125,100,100)
+        if timer>1500 and timer<=2100:
             for i in range (0,10):
                 swingbat[i].update()
-                swingbat[i].draw()
-
                 if characterx+100>swingbat[i].x-50 and characterx+100<swingbat[i].x+75 and hurt==0:
                     if charactery+75<swingbat[i].y and charactery+75>swingbat[i].y-50:
                         lifecount-=1
                         hurt=1
                         hurttime=timer
+            if timer==2100:
+                characterxr=False
+                characterxl=False
         if timer>2100 and timer <2900:
             bigbox.update()
-            bigbox.draw()
-
-            if timer>2200 :
+            if timer>2200:
                 for i in range(0,20):
                     if timer>2200+i*25 and timer<2400+i*100:
                         littlebox[i].update()
-                        littlebox[i].draw()
-
-
 
         if timer==2900:
             timer=0
@@ -850,30 +893,7 @@ def draw():
                 littlebox[i].x=520+random.randint(0,280)
                 littlebox[i].y=210
                 littlebox[i].fall=25+random.randint(0,10)
-            type=random.randint(0,3)%3
-            while type==2:
-                type=random.randint(0,3)%3
-
-
-    if hurt==0:
-        character.draw(100+characterx,75+charactery,50,40)
-    if hurt==1:
-        if timer%6==0:
-            character.draw(100+characterx,75+charactery,50,40)
-    if type!=1:
-       ground.draw(400,300) #땅
-
-
-
-
-    life.clip_draw(266*lifecount,0,266,600,150,560,300,200)
-
-    update_canvas()
-
-
-
-
-def update():
+            type=2
 
     delay(0.01)
 
