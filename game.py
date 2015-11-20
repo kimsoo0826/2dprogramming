@@ -26,20 +26,18 @@ choq=0 #초가스 q 올라오는 y값
 
 characterxr=False
 characterxl=False
-mainscreen=True
+
 lifecount=2
 hurt=0   #맞음
 hurttime=0 #맞은 시간
 timer=0
-wcheck=0
 jump=False
 jumpturn=False
 running=True
 characterx=0
 charactery=0
-type=1# random.randrange(0,3)%3
-count=0;
-four=4
+type=random.randrange(0,3)%3
+
 
 class Danger1:
     image =None
@@ -351,6 +349,23 @@ class Velkoztype3:
         else:
             self.beam.clip_draw(0, 0, 1800,600 , self.x, self.y)
 
+class Pidul:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =0,0
+        if Pidul.image==None:
+            Pidul.image = load_image('image\\pidul\\pidul.png')
+
+
+    def update(self):
+        if self.x>-500:
+            self.x-=10
+
+
+    def draw(self):
+        self.image.draw(950+self.x,250)
+
 
 class Pidulbat:
     image =None
@@ -364,6 +379,8 @@ class Pidulbat:
             Pidulbat.image = load_image('image\\pidul\\pidul bat.png')
 
     def update(self):
+        global characterx,charactery,lifecount,hurt,hurttime
+
         self.x-=self.plusx
         self.y-=self.plusy
 
@@ -387,6 +404,11 @@ class Pidulbat:
             else:
                 self.frame=2
 
+        if characterx+100>self.x-50 and characterx+100<self.x+50 and hurt==0:
+            if charactery+75<self.y and charactery+75>self.y-100:
+                lifecount-=1
+                hurt=1
+                hurttime=timer
 
     def draw(self):
         self.image.clip_draw(100*self.frame, 0, 100,100 , self.x, self.y)
@@ -442,8 +464,14 @@ class Bigbox:
             Bigbox.image = load_image('image\\pidul\\big box.png')
 
     def update(self):
+        global lifecount,hurt,hurttime,characterx,charactery
         if self.y>200:
             self.y-=50
+        if characterx+100>self.x-150 and characterx+100<self.x+300 and \
+                                charactery+75>self.y-150 and charactery+75<self.y and hurt==0:
+            lifecount-=1
+            hurt=1
+            hurttime=timer
 
     def draw(self):
         self.image.clip_draw(0,0, 400,300 , self.x, self.y)
@@ -458,26 +486,26 @@ class Littlebox:
             Littlebox.image = load_image('image\\pidul\\little box.png')
 
     def update(self):
+        global characterx, charactery, hurt,hurttime,lifecount
         self.fall-=1
         self.y+=self.fall
         self.x-=7
+
+        if characterx+100>self.x-60 and characterx+100<self.x+50 and  hurt==0:
+            if charactery+75<self.y+50 and charactery+75>self.y-50  :
+                lifecount-=1
+                hurt=1
+                hurttime=timer
 
     def draw(self):
         self.image.clip_draw(0,0, 100,100 , self.x, self.y)
 
 
-dangerframe=0 #위험 프레임\
+
 dangerline=[0]*7#초가스 r danger 깜빡이는 프레임
-act=0#초가스r을 움직이기 위해 모든 랜덤값 6개를 다른 숫자로
 count=0
-wframe=0 #초가스 w 프레임
 mousex=0
 mousey=0
-velq=[0]*3
-velqframe=[0]*3
-velwframe=0
-velqx=[0]*3
-velw2y=0
 freeze=0
 
 
@@ -500,37 +528,33 @@ chotype4frame=None
 chotype3=None
 
 def enter():#안되면 되게해라-앞의 변수 전역 global
-    global image
-    global ground,gameback,life,chogas,velkoz,pi,chotype1,chotype2,chotype4,danger,character,title,team,chotypeF,checktype4,chotype4frame,chotype3
-    global danger2,velq1,velq2,velq3,velqframe,velw1,velw2,velw2y,velkozr,velteam,zonya,pidulbat,pidulbatteam,movedanger,drain,drainframe,fear
-    global swingbat, bigbox, littlebox,velkoztype1,velkoztype2
+    global ground,gameback,life,pidul,character,title
+    global chogas,chotype1,chotype2,chotype4,danger,team,chotypeF,checktype4,chotype4frame,chotype3
+    global velkoz,danger2,velkozr,velkoztype3,velkoztype1,velkoztype2
+    global pidulbat,movedanger,drain,drainframe,fear,swingbat, bigbox, littlebox
 
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
     life=load_image('image\\life.png')#생명
+    character=load_image('image\\character.png')
+    danger=Danger1()
+
     chogas=Chogas()
     velkoz=Velkoz()
-    pi=load_image('image\\pidul\\pidul.png')#피들스틱 등장모습
+    pidul=Pidul()
     chotype1=Chotype1()
     chotype2=Chotype2()
     chotype3=Chotype3()
+    team = [Chotype3() for i in range(30)] #초가스 e 개수
     chotype4=Chotype4()
     velkoztype1=[Velkoztype1() for i in range(0,5)]
-    velw1=load_image('image\\velkoz\\velkoztype2-1.png')#벨코즈 두번째 스킬
     velkoztype2=Velkoztype2()
+    velkoztype3=[Velkoztype3() for i in range(30)]
+
     drain=load_image('image\\pidul\\pidul w.png')#피들스틱 흡수
     fear=load_image('image\\pidul\\fear.png')#피들스틱 공포
-
-    character=load_image('image\\character.png')
-
-    danger=Danger1()
-
-
-    pidulbat=Pidulbat()
     movedanger=Movedanger()
-    team = [Chotype3() for i in range(30)] #초가스 e 개수
-    velteam=[Velkoztype3() for i in range(30)]
-    pidulbatteam=[Pidulbat() for i in range(5)]#튕기는 박쥐 5마리
+    pidulbat=[Pidulbat() for i in range(5)]#튕기는 박쥐 5마리
     chotypeF= [0] * 7
     checktype4=[0]*7
     chotype4frame=[0]*7
@@ -620,12 +644,12 @@ def handle_events():
 def draw():
     clear_canvas()
     global gameback
-    global timer
-    global chogas,danger,dangerframe
-    global chotype1,choq,lifecount,hurt,chotype2,wframe,wcheck,chotype4,velx,velkoz,pix,pi,character,ground,lifecount,life,type,hurttime,danger2
-    global velq,velkoztype1,velqframe,velqx,velqy,velw1,velw2y,velwframe,jump,velteam,velkozr,zonya,freeze,pidulbat,pidulbatteam,drainframe
-    global movedanger,drain,bigbox,littlebox
+    global timer,lifecount,hurt,type,hurttime,life,character,ground,jump
+    global chogas,danger,chotype1,chotype2, chotype3,chotype4,team
+    global velkoz,velkoztype1,velkoztype3,danger2,freeze
+    global pidul,pidulbat,pidulbatteam,drainframe,movedanger,drain,bigbox,littlebox
     gameback.draw(400,300)#검은 배경
+
     if type==0:
         timer+=1
         chogas.update()
@@ -670,7 +694,9 @@ def draw():
             hurt=0
         if timer ==1080:
             timer=0
-            type=0
+            type=random.randint(0,3)%3
+            while type==0:
+                type=random.randint(0,3)%3
             for i in range(0,7):
                 chotype4frame[i]=0
                 chotypeF[i]=random.randint(0,7)
@@ -694,10 +720,6 @@ def draw():
 
         if hurt==1 and timer>=hurttime+100:
             hurt=0
-        if timer==5:
-            while velq[0]==velq[1] or velq[0]==velq[2] or velq[1]==velq[2]:
-                for i in range(0,3):
-                    velq[i]=random.randint(0,7)*100
 
         if timer>10 and timer<320:
             velkoztype1[0].update()
@@ -722,14 +744,14 @@ def draw():
             velkoztype2.draw()
 
         if timer>600 and timer<700:
-            velteam[0].update()
-            velteam[0].draw()
+            velkoztype3[0].update()
+            velkoztype3[0].draw()
 
         if timer>=700 and timer<1340:
             for i in range(0,30):
                 if timer>700+(20*i) and timer<720+(20*i):
-                    velteam[i].draw()
-                    if charactery+75<velteam[i].y+200+100 and charactery+75>velteam[i].y-100+200 and hurt==0:#충돌체크 조금만 더
+                    velkoztype3[i].draw()
+                    if charactery+75<velkoztype3[i].y+200+100 and charactery+75>velkoztype3[i].y-100+200 and hurt==0:#충돌체크 조금만 더
                         lifecount-=1
                         hurt=1
                         hurttime=timer
@@ -738,9 +760,9 @@ def draw():
 
         if timer>1340:
             timer=0
-            type=1#random.randint(0,5)%3
-            #while type==1:
-                #type=random.randint(0,5)%3
+            type=random.randint(0,5)%3
+            while type==1:
+                type=random.randint(0,5)%3
             hurt=0
             velkoz.x=0
             for i in range(0,5):
@@ -752,31 +774,24 @@ def draw():
             velkoztype2.downx, velkoztype2.downy =0,0
             velkoztype2.frame=0
             for i in range(0,30):
-                velteam[i].sandglassx, velteam[i].sandglassy =random.randint(50,750),random.randint(120,400)
-                velteam[i].x,velteam[i].y=0,random.randint(-90,300)
-
-
+                velkoztype3[i].sandglassx, velkoztype3[i].sandglassy =random.randint(50,750),random.randint(120,400)
+                velkoztype3[i].x,velkoztype3[i].y=0,random.randint(-90,300)
 
 
 
     if type==2:
         timer+=1
-        pi.draw(950+pix,250)#피들스틱 캐릭터
-        if pix>-500:
-            pix-=10
+        pidul.update()
+        pidul.draw()
         if hurt==1 and timer>=hurttime+100:
             hurt=0
         if timer>100:
             for i in range(0,5):
                 if timer>100+i*100 and timer<600+i*100:
-                    pidulbatteam[i].update()
-                    pidulbatteam[i].draw()
+                    pidulbat[i].update()
+                    pidulbat[i].draw()
 
-                    if characterx+100>pidulbatteam[i].x-50 and characterx+100<pidulbatteam[i].x+50 and hurt==0:
-                        if charactery+75<pidulbatteam[i].y and charactery+75>pidulbatteam[i].y-100:
-                            lifecount-=1
-                            hurt=1
-                            hurttime=timer
+
         if timer>1000 and timer<1500:
             if timer%4==0 and timer<1200:
                 movedanger.update()
@@ -805,33 +820,23 @@ def draw():
             bigbox.update()
             bigbox.draw()
 
-            if characterx+100>bigbox.x-150 and characterx+100<bigbox.x+300 and \
-                            charactery+75>bigbox.y-150 and charactery+75<bigbox.y and hurt==0:
-                lifecount-=1
-                hurt=1
-                hurttime=timer
-
             if timer>2200 :
                 for i in range(0,20):
                     if timer>2200+i*25 and timer<2400+i*100:
                         littlebox[i].update()
                         littlebox[i].draw()
 
-                        if characterx+100>littlebox[i].x-60 and characterx+100<littlebox[i].x+50 and  hurt==0:
-                            if charactery+75<littlebox[i].y+50 and charactery+75>littlebox[i].y-50  :
-                                lifecount-=1
-                                hurt=1
-                                hurttime=timer
+
 
         if timer==2900:
             timer=0
-            pix=0
+            pidul.x=0
             for i in range(0,5):
-                pidulbatteam[i].x=random.randint(100,700)
-                pidulbatteam[i].y=550
-                pidulbatteam[i].frame=0
-                pidulbatteam[i].plusx=5
-                pidulbatteam[i].plusy=5
+                pidulbat[i].x=random.randint(100,700)
+                pidulbat[i].y=550
+                pidulbat[i].frame=0
+                pidulbat[i].plusx=5
+                pidulbat[i].plusy=5
             movedanger.x==random.randint(100,700)
             movedanger.y=110
             drainframe=0
