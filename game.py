@@ -24,8 +24,7 @@ velx=0 #벨코즈 머리등장
 pix=0;#피들스틱 머리등장
 choq=0 #초가스 q 올라오는 y값
 
-characterxr=False
-characterxl=False
+
 
 lifecount=2
 hurt=0   #맞음
@@ -34,10 +33,34 @@ timer=0
 jump=False
 jumpturn=False
 running=True
-characterx=0
-charactery=0
-type=2#random.randrange(0,3)%3
+RIGHT_STATE,LEFT_STATE,STAND_STATE=0,1,2
+type=1#random.randrange(0,3)%3
 
+class Character:
+    image =None
+
+    def __init__(self):
+        self.x, self.y =0,0
+        self.state=0
+        if Character.image==None:
+            Character.image = load_image('image\\character.png')
+
+    def update(self):
+        global dir,RIGHT_STATE,LEFT_STATE
+        if not(timer>1500 and timer<=2100):
+            if self.state==RIGHT_STATE:
+                self.x=min(690,self.x+dir*5)
+            if self.state==LEFT_STATE:
+                self.x=max(-90,self.x+dir*5)
+        else:
+            if self.state==LEFT_STATE:
+                self.x=min(690,self.x+(-1*dir*5))
+            if self.state==RIGHT_STATE:
+                self.x=max(-90,self.x+(-1*dir*5))
+
+
+    def draw(self):
+        self.image.draw(100+self.x,75+self.y,50,40)
 
 class Danger1:
     image =None
@@ -99,10 +122,10 @@ class Chotype1:
             self.frame=(self.frame+1)%4
         self.y+=25-(timer-150)
     def draw(self):
-        global timer,hurt,hurttime,charactery,lifecount
+        global timer,hurt,hurttime,character,lifecount
         if timer>150 and timer<300:
             self.image.draw(400,-50+self.y)
-        if 75+charactery<self.y and hurt==0:
+        if 75+character.y<self.y and hurt==0:
                 lifecount-=1
                 hurt=1
                 hurttime=timer
@@ -126,10 +149,10 @@ class Chotype2:
         if self.check==1 and self.frame>0 and timer%2==0:
             self.frame=(self.frame-1)
     def draw(self):
-        global timer,lifecount,hurt,lifecount,hurttime,characterx
+        global timer,lifecount,hurt,lifecount,hurttime,character
         self.image.clip_draw(self.frame*100,0,100,100,450,325,700,500)
 
-        if 100+characterx>800-(100*self.frame) and hurt==0:
+        if 100+character.x>800-(100*self.frame) and hurt==0:
             lifecount-=1
             hurt=1
             hurttime=timer
@@ -146,11 +169,11 @@ class Chotype3:
         self.y -=5
 
     def draw(self):
-        global characterx,charactery,hurt,lifecount,hurttime,timer
+        global character,hurt,lifecount,hurttime,timer
         self.image.clip_draw(0, 0, 50, 100, self.x, self.y)
 
-        if self.x-50<characterx+100 and self.x+50>characterx+100:
-            if self.y>75+charactery and self.y-75<75+charactery and hurt==0:
+        if self.x-50<character.x+100 and self.x+50>character.x+100:
+            if self.y>75+character.y and self.y-75<75+character.y and hurt==0:
                 lifecount-=1
                 hurt=1
                 hurttime=timer
@@ -163,14 +186,14 @@ class Chotype4:
             Chotype4.image = load_image('image\\chogas\\chotype4.png')
 
     def draw(self):
-        global chotypeF,chotype4frame,chotypeF,characterx,charactery,lifecount,hurt,hurttime
+        global chotypeF,chotype4frame,chotypeF,character,lifecount,hurt,hurttime
         for i in range(0,7):
             self.image.clip_draw(chotype4frame[i]*100,0,100,100,100+200*(chotypeF[i]%4),460-270*(chotypeF[i]//4),200,270)
             if timer%4==0:
                 chotype4frame[i]=(chotype4frame[i]+1)%8
 
-            if 100+characterx<250+200*(chotypeF[i]%4) and 100+characterx>50+200*(chotypeF[i]%4) and hurt==0:
-                if 75+charactery<560-270*(chotypeF[i]//4) and 75+charactery>290-270*(chotypeF[i]//4):
+            if 100+character.x<250+200*(chotypeF[i]%4) and 100+character.x>50+200*(chotypeF[i]%4) and hurt==0:
+                if 75+character.y<560-270*(chotypeF[i]//4) and 75+character.y>290-270*(chotypeF[i]//4):
                     lifecount-=1
                     hurt=1
                     hurttime=timer
@@ -190,7 +213,6 @@ class Velkoz:
 
     def draw(self):
         self.image.draw(1100+self.x,self.y)#벨코즈 캐릭터
-
 
 
 class Velkoztype1:
@@ -232,7 +254,7 @@ class Velkoztype1:
             self.dangerframe=(self.dangerframe+1)%4
 
     def draw(self):
-        global timer,hurt,hurttime,lifecount,characterx,charactery
+        global timer,hurt,hurttime,lifecount,character
 
         if self.timer>10 and self.timer<320:
             if self.timer<50:
@@ -241,8 +263,8 @@ class Velkoztype1:
         if self.timer>50 and self.timer<120:
             self.image1.clip_draw(self.frame*100,0,100,100,self.x,800-self.y)
 
-            if 100+characterx>self.x and 100+characterx<self.x+100 and hurt==0:
-                if 75+charactery<800-self.y and 75+charactery>700-self.y:
+            if 100+character.x>self.x and 100+character.x<self.x+100 and hurt==0:
+                if 75+character.y<800-self.y and 75+character.y>700-self.y:
                     lifecount-=1
                     hurt=1
                     hurttime=timer
@@ -254,13 +276,13 @@ class Velkoztype1:
         if self.timer>145 and self.timer<225:
             self.image3.clip_draw(100,0,100,100,self.x+self.movex,100)
             self.image3.clip_draw(0,0,100,100,self.x-self.movex,100)
-            if characterx+100>self.x+self.movex and characterx+100<100+self.x+self.movex and hurt==0:
-                if charactery+75<100:
+            if character.x+100>self.x+self.movex and character.x+100<100+self.x+self.movex and hurt==0:
+                if character.y+75<100:
                     lifecount-=1
                     hurt=1
                     hurttime=timer
-            if characterx+100>self.x-self.movex and characterx+100<100+self.x-self.movex and hurt==0:
-                if charactery+75<100:
+            if character.x+100>self.x-self.movex and character.x+100<100+self.x-self.movex and hurt==0:
+                if character.y+75<100:
                     lifecount-=1
                     hurt=1
                     hurttime=timer
@@ -278,12 +300,12 @@ class Velkoztype2:
         if Velkoztype2.image2==None:
             Velkoztype2.image2 = load_image('image\\velkoz\\velkoztype2-1.png')
     def update(self):
-        global hurt,charactery,lifecount,hurt,hurttime,timer
+        global hurt,character,lifecount,hurt,hurttime,timer
         if timer>320 and timer<600:
             if 875+self.downy  >525:
                 self.downy -=50
 
-            if charactery+75>250 and hurt==0:
+            if character.y+75>250 and hurt==0:
                     lifecount-=1
                     hurt=1
                     hurttime=timer
@@ -292,7 +314,7 @@ class Velkoztype2:
             if timer ==390 or timer==453 or timer==517:
                 self.frame=0
     def draw(self):
-        global timer,jump,characterx
+        global timer,jump,character
         self.image1.draw(400,875+self.downy,800,600)
 
         if (timer>325 and timer<=389) or (timer>453 and timer<=517):
@@ -302,13 +324,13 @@ class Velkoztype2:
             self.image2.clip_draw(100*self.frame,0,100,100,650,10)
 
             if timer==389:
-                if characterx+75>150 and characterx+75<250:
+                if character.x+75>150 and character.x+75<250:
                     jump=1
-                if characterx+75>350 and characterx+75<450:
+                if character.x+75>350 and character.x+75<450:
                     jump=1
-                if characterx+75>550 and characterx+75<650:
+                if character.x+75>550 and character.x+75<650:
                     jump=1
-                if characterx+75>750 and characterx+75<850:
+                if character.x+75>750 and character.x+75<850:
                     jump=1
         if (timer>389 and timer<=453) or (timer>517 and timer<=581):
             self.image2.clip_draw(100*self.frame,0,100,100,150,10)
@@ -316,13 +338,13 @@ class Velkoztype2:
             self.image2.clip_draw(100*self.frame,0,100,100,550,10)
             self.image2.clip_draw(100*self.frame,0,100,100,750,10)
             if timer==453:
-                if characterx+75>50 and characterx+75<150:
+                if character.x+75>50 and character.x+75<150:
                     jump=1
-                if characterx+75>250 and characterx+75<350:
+                if character.x+75>250 and character.x+75<350:
                     jump=1
-                if characterx+75>450 and characterx+75<550:
+                if character.x+75>450 and character.x+75<550:
                     jump=1
-                if characterx+75>650 and characterx+75<750:
+                if character.x+75>650 and character.x+75<750:
                     jump=1
 
 class Velkoztype3:
@@ -338,10 +360,10 @@ class Velkoztype3:
             Velkoztype3.sandglass = load_image('image\\velkoz\\velkoztype3-2.png')
 
     def update(self):
-        global timer,characterx,charactery,freeze,hurt
+        global timer,character,freeze,hurt
         if timer>600 and timer<700:
-            if characterx+100>self.sandglassx-50 and characterx+100<self.sandglassx+50:
-                if charactery+75<self.sandglassy+30 and charactery+75>self.sandglassy-70:
+            if character.x+100>self.sandglassx-50 and character.x+100<self.sandglassx+50:
+                if character.y+75<self.sandglassy+30 and character.y+75>self.sandglassy-70:
                     freeze=1
                     hurt=-1
     def draw(self):
@@ -380,7 +402,7 @@ class Pidulbat:
             Pidulbat.image = load_image('image\\pidul\\pidul bat.png')
 
     def update(self):
-        global characterx,charactery,lifecount,hurt,hurttime
+        global character,lifecount,hurt,hurttime
 
         self.x-=self.plusx
         self.y-=self.plusy
@@ -405,8 +427,8 @@ class Pidulbat:
             else:
                 self.frame=2
 
-        if characterx+100>self.x-50 and characterx+100<self.x+50 and hurt==0:
-            if charactery+75<self.y and charactery+75>self.y-100:
+        if character.x+100>self.x-50 and character.x+100<self.x+50 and hurt==0:
+            if character.y+75<self.y and character.y+75>self.y-100:
                 lifecount-=1
                 hurt=1
                 hurttime=timer
@@ -423,13 +445,13 @@ class Movedanger:
         if Movedanger.image==None:
             Movedanger.image = load_image('image\\danger.png')
     def update(self):
-        global timer,characterx,charactery
+        global timer,character
         self.frame=(self.frame+1)%4
-        if characterx+100>self.x:
+        if character.x+100>self.x:
             self.x+=15
-        elif characterx+100<self.x-50:
+        elif character.x+100<self.x-50:
             self.x-=15
-        if charactery+75>self.y:
+        if character.y+75>self.y:
             self.y+=15
         else:
             self.y-=15
@@ -465,11 +487,11 @@ class Bigbox:
             Bigbox.image = load_image('image\\pidul\\big box.png')
 
     def update(self):
-        global lifecount,hurt,hurttime,characterx,charactery
+        global lifecount,hurt,hurttime,character
         if self.y>200:
             self.y-=50
-        if characterx+100>self.x-150 and characterx+100<self.x+300 and \
-                                charactery+75>self.y-150 and charactery+75<self.y and hurt==0:
+        if character.x+100>self.x-150 and character.x+100<self.x+300 and \
+                                character.y+75>self.y-150 and character.y+75<self.y and hurt==0:
             lifecount-=1
             hurt=1
             hurttime=timer
@@ -487,13 +509,13 @@ class Littlebox:
             Littlebox.image = load_image('image\\pidul\\little box.png')
 
     def update(self):
-        global characterx, charactery, hurt,hurttime,lifecount
+        global character, hurt,hurttime,lifecount
         self.fall-=1
         self.y+=self.fall
         self.x-=7
 
-        if characterx+100>self.x-60 and characterx+100<self.x+50 and  hurt==0:
-            if charactery+75<self.y+50 and charactery+75>self.y-50  :
+        if character.x+100>self.x-60 and character.x+100<self.x+50 and  hurt==0:
+            if character.y+75<self.y+50 and character.y+75>self.y-50  :
                 lifecount-=1
                 hurt=1
                 hurttime=timer
@@ -508,7 +530,7 @@ count=0
 mousex=0
 mousey=0
 freeze=0
-
+dir=0
 
 ground=None
 gameback=None
@@ -537,7 +559,7 @@ def enter():
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
     life=load_image('image\\life.png')#생명
-    character=load_image('image\\character.png')
+    character=Character()
     danger=Danger1()
 
     chogas=Chogas()
@@ -573,11 +595,9 @@ def exit():
 
 def handle_events():
     global running
-    global characterxr
-    global characterxl
-    global characterx
-    global charactery
+    global character
     global jump
+    global dir,RIGHT_STATE,LEFT_STATE,STAND_STATE
     global jumpturn
     global count
     global mousex
@@ -594,44 +614,28 @@ def handle_events():
                 if event.key==SDLK_SPACE:
                     jump+=1
                 if event.key==SDLK_RIGHT:
-                    if not(type==2 and timer>1500 and timer<2100):
-                        characterxr=True
-                    else:
-                        characterxl=True
-                if event.key==SDLK_LEFT:
-                    if not(type==2 and timer>1500 and timer<2100):
-                        characterxl=True
-                    else:
-                        characterxr=True
-                if event.key==SDLK_RETURN:
-                    mainscreen=True
-            elif event.type==SDL_KEYUP:
+                    character.state=RIGHT_STATE
+                    dir+=1
+                elif event.key==SDLK_LEFT:
+                    character.state=LEFT_STATE
+                    dir-=1
+            if event.type==SDL_KEYUP:
                 if event.key==SDLK_RIGHT:
-                    if not(type==2 and timer>1500 and timer<2100):
-                        characterxr=False
-                    else:
-                        characterxl=False
-
+                    character.state=LEFT_STATE
+                    dir-=1
                 if event.key==SDLK_LEFT:
-                    if not(type==2 and timer>1500 and timer<2100):
-                        characterxl=False
-                    else:
-                        characterxr=False
+                    character.state=RIGHT_STATE
+                    dir+=1
+
+
         if freeze==1:
-            characterxr=False
-            characterxl=False
-    if characterxr==True:
-        if characterx <= 680:
-            characterx+=5
-    if characterxl==True:
-        if characterx >=-80:
-            characterx-=5
+            dir=0
     if jump!=0 and jump!=2:
-        charactery+=20-count
+        character.y+=20-count
         count+=1
-        if(charactery<=0):
+        if(character.y<=0):
             count=0
-            charactery=0
+            character.y=0
             jump=0
     if jump==2:
         jumpturn=True
@@ -715,7 +719,7 @@ def draw():
                 drain.clip_draw(800*drainframe,0,800,800,movedanger.x+300,movedanger.y+300)
 
         if timer>1500 and timer<2100:
-            fear.draw(characterx+100,charactery+125,100,100)
+            fear.draw(character.x+100,character.y+125,100,100)
             for i in range (0,10):
                 swingbat[i].draw()
 
@@ -729,10 +733,10 @@ def draw():
 
 
     if hurt==0:
-        character.draw(100+characterx,75+charactery,50,40)
+        character.draw()
     if hurt==1:
         if timer%6==0:
-            character.draw(100+characterx,75+charactery,50,40)
+            character.draw()
     if type!=1:
        ground.draw(400,300) #땅
 
@@ -744,12 +748,13 @@ def draw():
 
 
 def update():
-    global gameback,characterxr,characterxl
+    global gameback,dir
     global timer,lifecount,hurt,type,hurttime,life,character,ground,jump
     global chogas,danger,chotype1,chotype2, chotype3,chotype4,team
     global velkoz,velkoztype1,velkoztype3,danger2,freeze
     global pidul,pidulbat,pidulbatteam,drainframe,movedanger,drain,bigbox,littlebox
 
+    character.update()
     if hurt==1 and timer>=hurttime+100:
             hurt=0
     if type==0:
@@ -810,7 +815,7 @@ def update():
         if timer>=700 and timer<1340:
             for i in range(0,30):
                 if timer>700+(20*i) and timer<720+(20*i):
-                    if charactery+75<velkoztype3[i].y+200+100 and charactery+75>velkoztype3[i].y-100+200 and hurt==0:#충돌체크 조금만 더
+                    if character.y+75<velkoztype3[i].y+200+100 and character.y+75>velkoztype3[i].y-100+200 and hurt==0:#충돌체크 조금만 더
                         lifecount-=1
                         hurt=1
                         hurttime=timer
@@ -849,21 +854,18 @@ def update():
             if timer>1200:
                 if timer%4==0:
                     drainframe=(drainframe+1)%8
-                if characterx+100>movedanger.x-75 and characterx+100<movedanger.x+150 and charactery+75>movedanger.y-50 and hurt==0:
+                if character.x+100>movedanger.x-75 and character.x+100<movedanger.x+150 and character.y+75>movedanger.y-50 and hurt==0:
                     lifecount-=1
                     hurt=1
                     hurttime=timer
         if timer>1500 and timer<=2100:
             for i in range (0,10):
                 swingbat[i].update()
-                if characterx+100>swingbat[i].x-50 and characterx+100<swingbat[i].x+75 and hurt==0:
-                    if charactery+75<swingbat[i].y and charactery+75>swingbat[i].y-50:
+                if character.x+100>swingbat[i].x-50 and character.x+100<swingbat[i].x+75 and hurt==0:
+                    if character.y+75<swingbat[i].y and character.y+75>swingbat[i].y-50:
                         lifecount-=1
                         hurt=1
                         hurttime=timer
-            if timer==2100:
-                characterxr=False
-                characterxl=False
         if timer>2100 and timer <2900:
             bigbox.update()
             if timer>2200:
