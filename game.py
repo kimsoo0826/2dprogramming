@@ -1,6 +1,7 @@
 
 from pico2d import *
 
+import score
 import game_framework
 import sys
 
@@ -15,14 +16,9 @@ import os
 
 
 
+
 name = "MainState"
 image = None
-
-
-
-velx=0 #벨코즈 머리등장
-pix=0;#피들스틱 머리등장
-choq=0 #초가스 q 올라오는 y값
 
 
 
@@ -30,11 +26,12 @@ lifecount=2
 hurt=0   #맞음
 hurttime=0 #맞은 시간
 timer=0
+scorenow=0
 jump=False
 jumpturn=False
 running=True
 RIGHT_STATE,LEFT_STATE,STAND_STATE=0,1,2
-type=1#random.randrange(0,3)%3
+type=random.randrange(0,3)%3
 
 class Character:
     image =None
@@ -549,9 +546,10 @@ chotypeF= None
 checktype4=None
 chotype4frame=None
 chotype3=None
+font=None
 
 def enter():
-    global ground,gameback,life,pidul,character,title
+    global ground,gameback,life,pidul,character,title,font
     global chogas,chotype1,chotype2,chotype4,danger,team,chotypeF,checktype4,chotype4frame,chotype3
     global velkoz,danger2,velkozr,velkoztype3,velkoztype1,velkoztype2
     global pidulbat,movedanger,drain,drainframe,fear,swingbat, bigbox, littlebox
@@ -559,9 +557,9 @@ def enter():
     ground = load_image('image\\ground.png')
     gameback = load_image('image\\gameback.png')
     life=load_image('image\\life.png')#생명
+    font=load_font("font.ttf",20)
     character=Character()
     danger=Danger1()
-
     chogas=Chogas()
     velkoz=Velkoz()
     pidul=Pidul()
@@ -603,6 +601,9 @@ def handle_events():
     global mousex
     global mousey
     global mainscreen,freeze
+    global lifecount
+    if lifecount==-1:
+        game_framework.push_state(score)
     events = get_events()
     for event in events:
         if event.type==SDL_QUIT:
@@ -626,8 +627,6 @@ def handle_events():
                 if event.key==SDLK_LEFT:
                     character.state=RIGHT_STATE
                     dir+=1
-
-
         if freeze==1:
             dir=0
     if jump!=0 and jump!=2:
@@ -654,6 +653,8 @@ def draw():
     global velkoz,velkoztype1,velkoztype3,danger2,freeze
     global pidul,pidulbat,pidulbatteam,drainframe,movedanger,drain,bigbox,littlebox
     gameback.draw(400,300)#검은 배경
+
+
 
     if type==0:
         chogas.draw()
@@ -741,19 +742,25 @@ def draw():
        ground.draw(400,300) #땅
 
     life.clip_draw(266*lifecount,0,266,600,150,560,300,200)
-
+    font.draw(50,500,'score: %d'%scorenow,color=(0,255,0))
     update_canvas()
 
 
 
 
 def update():
-    global gameback,dir
-    global timer,lifecount,hurt,type,hurttime,life,character,ground,jump
+    global gameback,dir,scorenow
+    global timer,lifecount,hurt,type,hurttime,life,character,ground,jump,jumpturn
     global chogas,danger,chotype1,chotype2, chotype3,chotype4,team
     global velkoz,velkoztype1,velkoztype3,danger2,freeze
-    global pidul,pidulbat,pidulbatteam,drainframe,movedanger,drain,bigbox,littlebox
+    global pidul,pidulbat,pidulbatteam,drainframe,movedanger,drain,bigbox,littlebox,scorenow
 
+
+    if lifecount==-1:
+        game_framework.push_state(score)
+
+
+    scorenow+=1
     character.update()
     if hurt==1 and timer>=hurttime+100:
             hurt=0
@@ -895,7 +902,9 @@ def update():
                 littlebox[i].x=520+random.randint(0,280)
                 littlebox[i].y=210
                 littlebox[i].fall=25+random.randint(0,10)
-            type=2
+            type=random.randint(0,5)%3
+            while type==2:
+                type=random.randint(0,5)%3
 
     delay(0.01)
 
