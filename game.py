@@ -20,25 +20,28 @@ import os
 name = "MainState"
 image = None
 
+data_file = open('startpoint.txt','r')
+data = json.load(data_file)
+data_file.close()
 
 
-lifecount=2
-hurt=0   #맞음
-hurttime=0 #맞은 시간
-timer=0
-scorenow=0
+lifecount=data['title']['lifecount']
+hurt=data['title']['hurt']   #맞음
+hurttime=data['title']['hurttime'] #맞은 시간
+timer=data['title']['timer']
+scorenow=data['title']['scorenow']
 jump=False
 jumpturn=False
 running=True
-RIGHT_STATE,LEFT_STATE,STAND_STATE=0,1,2
+RIGHT_STATE,LEFT_STATE,STAND_STATE=data['title']['RIGHT_STATE'],data['title']['LEFT_STATE'],data['title']['STAND_STATE']
 type=random.randrange(0,3)%3
 
 class Character:
     image =None
 
     def __init__(self):
-        self.x, self.y =0,0
-        self.state=0
+        self.x, self.y =data['character']['x'],data['character']['y']
+        self.state=data['character']['state']
         if Character.image==None:
             Character.image = load_image('image\\character.png')
 
@@ -63,9 +66,9 @@ class Danger1:
     image =None
 
     def __init__(self):
-        self.x, self.y =0,0
-        self.frame=0
-        self.timer=0
+        self.x, self.y =data['danger1']['x'],data['danger1']['y']
+        self.frame=data['danger1']['frame']
+        self.timer=data['danger1']['timer']
         if Danger1.image==None:
             Danger1.image = load_image('image\\danger.png')
 
@@ -92,7 +95,7 @@ class Chogas:
     image =None
 
     def __init__(self):
-        self.x, self.y =0,300
+        self.x, self.y =data['chogas']['x'], data['chogas']['y']
         if Chogas.image==None:
             Chogas.image = load_image('image\\chogas\\chogas.png')
 
@@ -108,8 +111,8 @@ class Chotype1:
     image =None
 
     def __init__(self):
-        self.x, self.y =0,0
-        self.frame=0
+        self.x, self.y =data['chotype1']['x'],data['chotype1']['y']
+        self.frame=data['chotype1']['frame']
         if Chotype1.image==None:
             Chotype1.image = load_image('image\\chogas\\chotype1.png')
 
@@ -131,9 +134,9 @@ class Chotype2:
     image =None
 
     def __init__(self):
-        self.x, self.y =0,0
-        self.frame=0
-        self.check=0
+        self.x, self.y =data['chotype2']['x'],data['chotype2']['y']
+        self.frame=data['chotype2']['frame']
+        self.check=data['chotype2']['check']
         if Chotype2.image==None:
             Chotype2.image = load_image('image\\chogas\\chotype2.png')
 
@@ -200,7 +203,7 @@ class Velkoz:
     image =None
 
     def __init__(self):
-        self.x, self.y =0, 250
+        self.x, self.y =data['velkoz']['x'], data['velkoz']['y']
         if Velkoz.image==None:
             Velkoz.image = load_image('image\\velkoz\\velkoz.png')
 
@@ -219,11 +222,11 @@ class Velkoztype1:
     danger=None
 
     def __init__(self):
-        self.x, self.y =random.randint(1,7)*100,0
-        self.movex=0
-        self.timer=0
-        self.frame=0
-        self.dangerframe=0
+        self.x, self.y =random.randint(1,7)*100,data['velkoztype1']['y']
+        self.movex=data['velkoztype1']['movex']
+        self.timer=data['velkoztype1']['timer']
+        self.frame=data['velkoztype1']['frame']
+        self.dangerframe=data['velkoztype1']['dangerframe']
         if Velkoztype1.danger==None:
             Velkoztype1.danger = load_image('image\\danger2.png')
         if Velkoztype1.image1==None:
@@ -289,8 +292,8 @@ class Velkoztype2:
     image2=None
 
     def __init__(self):
-        self.downx, self.downy =0,0
-        self.frame=0
+        self.downx, self.downy =data['velkoztype2']['downx'],data['velkoztype2']['downy']
+        self.frame=data['velkoztype2']['frame']
 
         if Velkoztype2.image1==None:
             Velkoztype2.image1 = load_image('image\\velkoz\\velkoztype2-2.png')
@@ -350,7 +353,7 @@ class Velkoztype3:
 
     def __init__(self):
         self.sandglassx, self.sandglassy =random.randint(50,750),random.randint(120,400)
-        self.x,self.y=0,random.randint(-90,300)
+        self.x,self.y=data['velkoztype3']['x'],random.randint(-90,300)
         if Velkoztype3.beam==None:
             Velkoztype3.beam = load_image('image\\velkoz\\velkoztype3-1.png')
         if Velkoztype3.sandglass==None:
@@ -373,7 +376,7 @@ class Pidul:
     image =None
 
     def __init__(self):
-        self.x, self.y =0,0
+        self.x, self.y =data['pidul']['x'],data['pidul']['y']
         if Pidul.image==None:
             Pidul.image = load_image('image\\pidul\\pidul.png')
 
@@ -437,8 +440,8 @@ class Movedanger:
     image =None
 
     def __init__(self):
-        self.x, self.y =random.randint(100,700),110
-        self.frame=0
+        self.x, self.y =random.randint(100,700),data['movedanger']['y']
+        self.frame=data['movedanger']['frame']
         if Movedanger.image==None:
             Movedanger.image = load_image('image\\danger.png')
     def update(self):
@@ -479,7 +482,7 @@ class Bigbox:
     image =None
 
     def __init__(self):
-        self.x, self.y =600,500
+        self.x, self.y =data['bigbox']['x'],data['bigbox']['y']
         if Bigbox.image==None:
             Bigbox.image = load_image('image\\pidul\\big box.png')
 
@@ -500,7 +503,7 @@ class Littlebox:
     image =None
 
     def __init__(self):
-        self.x, self.y =520+random.randint(0,280),210
+        self.x, self.y =520+random.randint(0,280),data['littlebox']['y']
         self.fall=25+random.randint(0,10)
         if Littlebox.image==None:
             Littlebox.image = load_image('image\\pidul\\little box.png')
@@ -523,11 +526,9 @@ class Littlebox:
 
 
 dangerline=[0]*7#초가스 r danger 깜빡이는 프레임
-count=0
-mousex=0
-mousey=0
-freeze=0
-dir=0
+count=data['title']['count']
+freeze=data['title']['freeze']
+dir=data['title']['dir']
 
 ground=None
 gameback=None
@@ -579,7 +580,7 @@ def enter():
     chotypeF= [0] * 7
     checktype4=[0]*7
     chotype4frame=[0]*7
-    drainframe=0
+    drainframe=data['title']['drainframe']
     bigbox=Bigbox()
     littlebox=[Littlebox() for i in range(20)]
     swingbat=[Swingbat() for i in range(10)]
@@ -598,8 +599,6 @@ def handle_events():
     global dir,RIGHT_STATE,LEFT_STATE,STAND_STATE
     global jumpturn
     global count
-    global mousex
-    global mousey
     global mainscreen,freeze
     global lifecount
     if lifecount==-1:
@@ -785,19 +784,19 @@ def update():
                             chotypeF[i]=random.randint(0,7)
                     checktype4[i]=1
         if timer ==1080:
-            timer=0
+            timer=data['title']['timer']
             type=random.randint(0,3)%3
             while type==0:
                 type=random.randint(0,3)%3
             for i in range(0,7):
                 chotype4frame[i]=0
                 chotypeF[i]=random.randint(0,7)
-            hurt=0
-            chogas.x=0
-            chotype1.y=0
-            chotype2.x, chotype2.y =0,0
-            chotype2.frame=0
-            chotype2.check=0
+            hurt=data['title']['hurt']
+            chogas.x=data['chogas']['x']
+            chotype1.y=data['chotype1']['y']
+            chotype2.x, chotype2.y =data['chotype2']['x'],data['chotype2']['y']
+            chotype2.frame=data['chotype2']['frame']
+            chotype2.check=data['chotype2']['check']
             for i in range(0,30):
                 team[i].x=random.randint(0, 800)
                 team[i].y= random.randint(100, 700)+600
@@ -830,23 +829,23 @@ def update():
                 freeze=0
 
         if timer>1340:
-            timer=0
+            timer=data['title']['timer']
             type=random.randint(0,5)%3
             while type==1:
                 type=random.randint(0,5)%3
-            hurt=0
-            velkoz.x=0
+            hurt=data['title']['hurt']
+            velkoz.x=data['velkoz']['x']
             for i in range(0,5):
                 velkoztype1[i].x, velkoztype1[i].y =random.randint(1,7)*100,0
-                velkoztype1[i].movex=0
-                velkoztype1[i].timer=0
-                velkoztype1[i].frame=0
-                velkoztype1[i].dangerframe=0
-            velkoztype2.downx, velkoztype2.downy =0,0
-            velkoztype2.frame=0
+                velkoztype1[i].movex=data['velkoztype1']['movex']
+                velkoztype1[i].timer=data['velkoztype1']['timer']
+                velkoztype1[i].frame=data['velkoztype1']['frame']
+                velkoztype1[i].dangerframe=data['velkoztype1']['dangerframe']
+            velkoztype2.downx, velkoztype2.downy =data['velkoztype2']['downx'],data['velkoztype2']['downy']
+            velkoztype2.frame=data['velkoztype2']['frame']
             for i in range(0,30):
                 velkoztype3[i].sandglassx, velkoztype3[i].sandglassy =random.randint(50,750),random.randint(120,400)
-                velkoztype3[i].x,velkoztype3[i].y=0,random.randint(-90,300)
+                velkoztype3[i].x,velkoztype3[i].y=data['velkoztype3']['x'],random.randint(-90,300)
 
     if type==2:
         timer+=1
@@ -881,26 +880,27 @@ def update():
                         littlebox[i].update()
 
         if timer==2900:
-            timer=0
-            pidul.x=0
+            timer=data['title']['timer']
+            pidul.x=data['pidul']['x']
             for i in range(0,5):
                 pidulbat[i].x=random.randint(100,700)
-                pidulbat[i].y=550
-                pidulbat[i].frame=0
-                pidulbat[i].plusx=5
-                pidulbat[i].plusy=5
+                pidulbat[i].y=data['pidulbat']['y']
+                pidulbat[i].frame=data['pidulbat']['frame']
+                pidulbat[i].plusx=data['pidulbat']['plusx']
+                pidulbat[i].plusy=data['pidulbat']['plusy']
             movedanger.x==random.randint(100,700)
-            movedanger.y=110
-            drainframe=0
-            bigbox.x=600
-            bigbox.y=500
+            hurt=data['title']['hurt']
+            movedanger.y=data['movedanger']['y']
+            drainframe=data['title']['drainframe']
+            bigbox.x=data['bigbox']['x']
+            bigbox.y=data['bigbox']['y']
             for i in range(0,10):
                 swingbat[i].x=random.randint(100,700)
                 swingbat[i].y=random.randint(100,1000)+500
                 swingbat[i].angle=random.randint(0,360)
             for i in range(0,20):
                 littlebox[i].x=520+random.randint(0,280)
-                littlebox[i].y=210
+                littlebox[i].y=data['littlebox']['y']
                 littlebox[i].fall=25+random.randint(0,10)
             type=random.randint(0,5)%3
             while type==2:

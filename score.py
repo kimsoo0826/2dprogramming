@@ -12,6 +12,10 @@ import game
 name = "score"
 image = None
 
+data_file = open('startpoint.txt','r')
+data = json.load(data_file)
+data_file.close()
+
 font=None
 
 def enter():
@@ -34,73 +38,69 @@ def handle_events():
             if(event.type, event.key)==(SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
             elif(event.type, event.key)==(SDL_KEYDOWN, SDLK_RETURN):
-                game.timer=0
+                game.timer=data['title']['timer']
                 game.type=random.randint(0,3)%3
                 for i in range(0,7):
                     game.chotype4frame[i]=0
                     game.chotypeF[i]=random.randint(0,7)
-                game.hurt=0
-                game.chogas.x=0
-                game.chotype1.y=0
-                game.chotype2.x, game.chotype2.y =0,0
-                game.chotype2.frame=0
-                game.chotype2.check=0
+                game.hurt=data['title']['hurt']
+                game.chogas.x=data['chogas']['x']
+                game.chotype1.y=data['chotype1']['y']
+                game.chotype2.x, game.chotype2.y =data['chotype2']['x'],data['chotype2']['y']
+                game.chotype2.frame=data['chotype2']['frame']
+                game.chotype2.check=data['chotype2']['check']
                 for i in range(0,30):
                     game.team[i].x=random.randint(0, 800)
                     game.team[i].y= random.randint(100, 700)+600
-                game.freeze=0
+                game.freeze=data['title']['freeze']
 
 
-                game.velkoz.x=0
+                game.velkoz.x=data['velkoz']['x']
                 for i in range(0,5):
-                    game.velkoztype1[i].x, game.velkoztype1[i].y =random.randint(1,7)*100,0
-                    game.velkoztype1[i].movex=0
-                    game.velkoztype1[i].timer=0
-                    game.velkoztype1[i].frame=0
-                    game.velkoztype1[i].dangerframe=0
-                game.velkoztype2.downx, game.velkoztype2.downy =0,0
-                game.velkoztype2.frame=0
+                    game.velkoztype1[i].x, game.velkoztype1[i].y =random.randint(1,7)*100,data['velkoztype1']['y']
+                    game.velkoztype1[i].movex=data['velkoztype1']['movex']
+                    game.velkoztype1[i].timer=data['velkoztype1']['timer']
+                    game.velkoztype1[i].frame=data['velkoztype1']['frame']
+                    game.velkoztype1[i].dangerframe=data['velkoztype1']['dangerframe']
+                game.velkoztype2.downx, game.velkoztype2.downy =data['velkoztype2']['downx'],data['velkoztype2']['downy']
+                game.velkoztype2.frame=data['velkoztype2']['frame']
                 for i in range(0,30):
                     game.velkoztype3[i].sandglassx, game.velkoztype3[i].sandglassy =random.randint(50,750),random.randint(120,400)
                     game.velkoztype3[i].x,game.velkoztype3[i].y=0,random.randint(-90,300)
 
-                game.pidul.x=0
+                game.pidul.x=data['pidul']['x']
                 for i in range(0,5):
                     game.pidulbat[i].x=random.randint(100,700)
-                    game.pidulbat[i].y=550
-                    game.pidulbat[i].frame=0
-                    game.pidulbat[i].plusx=5
-                    game.pidulbat[i].plusy=5
+                    game.pidulbat[i].y=data['pidulbat']['y']
+                    game.pidulbat[i].frame=data['pidulbat']['frame']
+                    game.pidulbat[i].plusx=data['pidulbat']['plusx']
+                    game.pidulbat[i].plusy=data['pidulbat']['plusy']
                 game.movedanger.x==random.randint(100,700)
-                game.movedanger.y=110
-                game.drainframe=0
-                game.bigbox.x=600
-                game.bigbox.y=500
+                game.movedanger.y=data['movedanger']['y']
+                game.drainframe=data['title']['drainframe']
+                game.bigbox.x=data['bigbox']['x']
+                game.bigbox.y=data['bigbox']['y']
                 for i in range(0,10):
                     game.swingbat[i].x=random.randint(100,700)
                     game.swingbat[i].y=random.randint(100,1000)+500
                     game.swingbat[i].angle=random.randint(0,360)
                 for i in range(0,20):
                     game.littlebox[i].x=520+random.randint(0,280)
-                    game.littlebox[i].y=210
+                    game.littlebox[i].y=data['littlebox']['y']
                     game.littlebox[i].fall=25+random.randint(0,10)
 
-                game.lifecount=2
-                game.hurttime=0 #맞은 시간
+                game.lifecount=data['title']['lifecount']
+                game.hurttime=data['title']['hurttime'] #맞은 시간
                 game.jump=False
                 game.jumpturn=False
                 game.running=True
 
-                game.character.x,game.character.y=0,0
-                game.state=0
+                game.character.x,game.character.y=data['character']['x'],data['character']['y']
                 game.dangerline=[0]*7#초가스 r danger 깜빡이는 프레임
-                game.count=0
-                game.mousex=0
-                game.mousey=0
-                game.freeze=0
-                game.dir=0
-                game.lastscore=0
-                game.scorenow=0
+                game.count=data['title']['count']
+                game.freeze=data['title']['freeze']
+                game.dir=data['title']['dir']
+                game.scorenow=data['title']['scorenow']
 
                 game_framework.push_state(game)
 
