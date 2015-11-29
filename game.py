@@ -34,8 +34,7 @@ jump=False
 jumpturn=False
 running=True
 RIGHT_STATE,LEFT_STATE,STAND_STATE=data['title']['RIGHT_STATE'],data['title']['LEFT_STATE'],data['title']['STAND_STATE']
-type=1#random.randrange(0,3)%3
-chogasbgm=None
+type=random.randrange(0,3)%3
 
 
 class Ground:
@@ -78,7 +77,6 @@ class Character:
 
     def draw(self):
         self.image.draw(100+self.x,75+self.y,50,40)
-
 class Danger1:
     image =None
 
@@ -260,13 +258,19 @@ class Velkoztype1:
     image3=None
     danger=None
 
-
     def __init__(self):
         self.x, self.y =random.randint(1,7)*100,data['velkoztype1']['y']
         self.movex=data['velkoztype1']['movex']
         self.timer=data['velkoztype1']['timer']
         self.frame=data['velkoztype1']['frame']
         self.dangerframe=data['velkoztype1']['dangerframe']
+        self.bgm1=load_wav('bgm\\velkoztype1and1.wav')
+        self.bgm2=load_wav('bgm\\velkoztype1and2.wav')
+        self.bgm3=load_wav('bgm\\velkoztype1and3.wav')
+        self.bgm1.set_volume(8192)
+        self.bgm2.set_volume(8192)
+        self.bgm3.set_volume(8192)
+
 
         if Velkoztype1.danger==None:
             Velkoztype1.danger = load_image('image\\danger2.png')
@@ -279,7 +283,6 @@ class Velkoztype1:
 
 
     def update(self):
-        global bgm1,bgm2,bgm3
         self.timer+=1
         if self.timer%8==0:
             self.frame=(self.frame+1)%4
@@ -339,11 +342,15 @@ class Velkoztype2:
     def __init__(self):
         self.downx, self.downy =data['velkoztype2']['downx'],data['velkoztype2']['downy']
         self.frame=data['velkoztype2']['frame']
+        self.bgm=load_wav('bgm\\velkoztype2.wav')
+        self.bgm.set_volume(4096)
 
         if Velkoztype2.image1==None:
             Velkoztype2.image1 = load_image('image\\velkoz\\velkoztype2-2.png')
         if Velkoztype2.image2==None:
             Velkoztype2.image2 = load_image('image\\velkoz\\velkoztype2-1.png')
+
+
     def update(self):
         global hurt,character,lifecount,hurt,hurttime,timer
         if timer>320 and timer<600:
@@ -368,7 +375,8 @@ class Velkoztype2:
             self.image2.clip_draw(100*self.frame,0,100,100,450,10)
             self.image2.clip_draw(100*self.frame,0,100,100,650,10)
 
-            if timer==389:
+            if timer==389 or timer==517:
+                self.bgm.play()
                 if character.x+75>150 and character.x+75<250:
                     jump=1
                 if character.x+75>350 and character.x+75<450:
@@ -382,7 +390,8 @@ class Velkoztype2:
             self.image2.clip_draw(100*self.frame,0,100,100,350,10)
             self.image2.clip_draw(100*self.frame,0,100,100,550,10)
             self.image2.clip_draw(100*self.frame,0,100,100,750,10)
-            if timer==453:
+            if timer==453 or timer==581:
+                self.bgm.play()
                 if character.x+75>50 and character.x+75<150:
                     jump=1
                 if character.x+75>250 and character.x+75<350:
@@ -399,6 +408,10 @@ class Velkoztype3:
     def __init__(self):
         self.sandglassx, self.sandglassy =random.randint(50,750),random.randint(120,400)
         self.x,self.y=data['velkoztype3']['x'],random.randint(-90,300)
+        self.bgm1=load_wav('bgm\\velkoztype3.wav')
+        self.bgm1.set_volume(4096)
+        self.bgm2=load_wav('bgm\\sandglass.wav')
+        self.bgm2.set_volume(4096)
         if Velkoztype3.beam==None:
             Velkoztype3.beam = load_image('image\\velkoz\\velkoztype3-1.png')
         if Velkoztype3.sandglass==None:
@@ -409,6 +422,7 @@ class Velkoztype3:
         if timer>600 and timer<700:
             if character.x+100>self.sandglassx-50 and character.x+100<self.sandglassx+50:
                 if character.y+75<self.sandglassy+30 and character.y+75>self.sandglassy-70:
+                    self.bgm2.play()
                     freeze=1
                     hurt=-1
     def draw(self):
@@ -422,18 +436,22 @@ class Pidul:
 
     def __init__(self):
         self.x, self.y =data['pidul']['x'],data['pidul']['y']
+        self.bgm=load_wav('bgm\\pidul.wav')
+        self.bgm.set_volume(32)
         if Pidul.image==None:
             Pidul.image = load_image('image\\pidul\\pidul.png')
 
 
     def update(self):
+        global timer
         if self.x>-500:
             self.x-=10
+        if timer==1:
+            self.bgm.play()
 
 
     def draw(self):
         self.image.draw(950+self.x,250)
-
 
 class Pidulbat:
     image =None
@@ -443,6 +461,8 @@ class Pidulbat:
         self.frame=0
         self.plusx=5
         self.plusy=5
+        self.bgm=load_wav('bgm\\pidultype1.wav')
+        self.bgm.set_volume(32)
         if Pidulbat.image==None:
             Pidulbat.image = load_image('image\\pidul\\pidul bat.png')
 
@@ -487,6 +507,8 @@ class Movedanger:
     def __init__(self):
         self.x, self.y =random.randint(100,700),data['movedanger']['y']
         self.frame=data['movedanger']['frame']
+        self.bgm=load_wav('bgm\\pidultype2.wav')
+        self.bgm.set_volume(32)
         if Movedanger.image==None:
             Movedanger.image = load_image('image\\danger.png')
     def update(self):
@@ -501,6 +523,10 @@ class Movedanger:
         else:
             self.y-=15
 
+        if timer==1196:
+            self.bgm.play(2)
+
+
 
     def draw(self):
         self.image.clip_draw(0, 50*self.frame, 300,50 , self.x, self.y,100,100)
@@ -511,12 +537,19 @@ class Swingbat:
     def __init__(self):
         self.x, self.y =random.randint(100,700),random.randint(100,1000)+500
         self.angle=random.randint(0,360)
+        self.bgm=load_wav('bgm\\pidultype3.wav')
+        self.bgm.set_volume(32)
         if Swingbat.image==None:
             Swingbat.image = load_image('image\\pidul\\swing bat.png')
     def update(self):
+        global timer
         self.angle+=2
         self.x+=10*math.cos(math.pi*(self.angle/180))
         self.y-=3
+
+        if timer==1501:
+            self.bgm.play()
+
 
 
     def draw(self):
@@ -528,6 +561,8 @@ class Bigbox:
 
     def __init__(self):
         self.x, self.y =data['bigbox']['x'],data['bigbox']['y']
+        self.bgm=load_wav('bgm\\pidultype4.wav')
+        self.bgm.set_volume(32)
         if Bigbox.image==None:
             Bigbox.image = load_image('image\\pidul\\big box.png')
 
@@ -540,6 +575,10 @@ class Bigbox:
             lifecount-=1
             hurt=1
             hurttime=timer
+        if timer==2101:
+            self.bgm.play(3)
+
+
 
     def draw(self):
         self.image.clip_draw(0,0, 400,300 , self.x, self.y)
@@ -866,14 +905,44 @@ def update():
         timer+=1
         velkoz.update()
         if timer>10 and timer<320:
+            if timer==51:
+                velkoztype1[0].bgm1.play()
+            if timer==121:
+                velkoztype1[0].bgm2.play()
+            if timer==146:
+                velkoztype1[0].bgm3.play()
             velkoztype1[0].update()
         if timer>30 and timer<320:
+            if timer==71:
+                velkoztype1[1].bgm1.play()
+            if timer==141:
+                velkoztype1[1].bgm2.play()
+            if timer==166:
+                velkoztype1[1].bgm3.play()
             velkoztype1[1].update()
         if timer>50 and timer<320:
+            if timer==91:
+                velkoztype1[2].bgm1.play()
+            if timer==161:
+                velkoztype1[2].bgm2.play()
+            if timer==186:
+                velkoztype1[2].bgm3.play()
             velkoztype1[2].update()
         if timer>70 and timer<320:
+            if timer==111:
+                velkoztype1[3].bgm1.play()
+            if timer==181:
+                velkoztype1[3].bgm2.play()
+            if timer==206:
+                velkoztype1[3].bgm3.play()
             velkoztype1[3].update()
         if timer>90 and timer<320:
+            if timer==51:
+                velkoztype1[4].bgm1.play()
+            if timer==121:
+                velkoztype1[4].bgm2.play()
+            if timer==146:
+                velkoztype1[4].bgm3.play()
             velkoztype1[4].update()
         if timer>320 and timer<600:
             velkoztype2.update()
@@ -882,6 +951,8 @@ def update():
         if timer>=700 and timer<1340:
             for i in range(0,30):
                 if timer>700+(20*i) and timer<720+(20*i):
+                    if timer==701+(20*i):
+                        velkoztype3[i].bgm1.play()
                     if character.y+75<velkoztype3[i].y+200+100 and character.y+75>velkoztype3[i].y-100+200 and hurt==0:#충돌체크 조금만 더
                         lifecount-=1
                         hurt=1
@@ -914,6 +985,8 @@ def update():
         if timer>100:
             for i in range(0,5):
                 if timer>100+i*100 and timer<600+i*100:
+                    if timer==101+i*100:
+                        pidulbat[i].bgm.play()
                     pidulbat[i].update()
         if timer>1000 and timer<1500:
             if timer%4==0 and timer<1200:
