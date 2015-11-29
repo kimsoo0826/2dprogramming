@@ -11,16 +11,19 @@ import game
 
 name = "Title"
 image = None
-
+bgm=None
 
 def enter():
-    global image
+    global image,bgm
     open_canvas()
     image=load_image('image\\title.png')
+    bgm=load_music('bgm\\ans.mp3')
+    bgm.set_volume(64)
+    bgm.repeat_play()
 
 
 def exit():
-    global image
+    global image,bgm
     del(image)
 
 
@@ -33,7 +36,9 @@ def handle_events():
             if(event.type, event.key)==(SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
             elif(event.type, event.key)==(SDL_KEYDOWN, SDLK_RETURN):
+                bgm.stop()
                 game_framework.push_state(game)
+
 
 
 

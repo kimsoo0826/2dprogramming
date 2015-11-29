@@ -34,10 +34,25 @@ jump=False
 jumpturn=False
 running=True
 RIGHT_STATE,LEFT_STATE,STAND_STATE=data['title']['RIGHT_STATE'],data['title']['LEFT_STATE'],data['title']['STAND_STATE']
-type=random.randrange(0,3)%3
+type=1#random.randrange(0,3)%3
+chogasbgm=None
+
+
+class Ground:
+
+    def __init__(self):
+        self.image=load_image('image\\ground.png')
+        self.bgm=load_music('bgm\\ans.mp3')
+        self.bgm.set_volume(16)
+        self.bgm.repeat_play()
+
+    def draw(self):
+        self.image.draw(400,300)
+
 
 class Character:
     image =None
+
 
     def __init__(self):
         self.x, self.y =data['character']['x'],data['character']['y']
@@ -45,8 +60,10 @@ class Character:
         if Character.image==None:
             Character.image = load_image('image\\character.png')
 
+
     def update(self):
         global dir,RIGHT_STATE,LEFT_STATE
+
         if not(timer>1500 and timer<=2100):
             if self.state==RIGHT_STATE:
                 self.x=min(690,self.x+dir*5)
@@ -69,6 +86,10 @@ class Danger1:
         self.x, self.y =data['danger1']['x'],data['danger1']['y']
         self.frame=data['danger1']['frame']
         self.timer=data['danger1']['timer']
+        self.bgm1=load_wav('bgm\\chogastype1.wav')
+        self.bgm1.set_volume(128)
+        self.bgm2=load_wav('bgm\\chogastype2.wav')
+        self.bgm2.set_volume(128)
         if Danger1.image==None:
             Danger1.image = load_image('image\\danger.png')
 
@@ -84,8 +105,12 @@ class Danger1:
         if type==0:
             if timer<150 and timer>40:
                 self.image.clip_draw(0,self.frame*50,800,50,400,150,800,200)
+                if timer==80:
+                    self.bgm1.play()
             if timer<400 and timer>300:
                 self.image.clip_draw(0,self.frame*50,800,50,450,300,700,600)
+                if timer==390:
+                    self.bgm2.play()
             if timer<950 and timer>900:
                 for i in range(0,7):
                     self.image.clip_draw(0,dangerline[i]*50,800,50,100+200*(chotypeF[i]%4),460-270*(chotypeF[i]//4),200,270)
@@ -98,6 +123,8 @@ class Chogas:
         self.x, self.y =data['chogas']['x'], data['chogas']['y']
         if Chogas.image==None:
             Chogas.image = load_image('image\\chogas\\chogas.png')
+        self.bgm=load_wav('bgm\\chogas.wav')
+        self.bgm.set_volume(128)
 
     def update(self):
         if self.x>-400:
@@ -105,7 +132,6 @@ class Chogas:
 
     def draw(self):
          self.image.draw(1100+self.x,self.y)#초가스 캐릭터
-
 
 class Chotype1:
     image =None
@@ -162,6 +188,8 @@ class Chotype3:
 
     def __init__(self):
         self.x, self.y =random.randint(0, 800), random.randint(100, 700)+600
+        self.bgm=load_wav('bgm\\chogastype3.wav')
+        self.bgm.set_volume(128)
         if Chotype3.image==None:
             Chotype3.image = load_image('image\\chogas\\chotype3.png')
 
@@ -184,6 +212,8 @@ class Chotype4:
     def __init__(self):
         if Chotype4.image==None:
             Chotype4.image = load_image('image\\chogas\\chotype4.png')
+        self.bgm=load_wav('bgm\\chogastype4.wav')
+        self.bgm.set_volume(512)
 
     def draw(self):
         global chotypeF,chotype4frame,chotypeF,character,lifecount,hurt,hurttime
@@ -206,10 +236,19 @@ class Velkoz:
         self.x, self.y =data['velkoz']['x'], data['velkoz']['y']
         if Velkoz.image==None:
             Velkoz.image = load_image('image\\velkoz\\velkoz.png')
+        self.bgm=load_wav('bgm\\velkoz.wav')
+        self.bgm.set_volume(256)
+
 
     def update(self):
+        global timer,type;
         if self.x>-500:
             self.x-=10
+        if type==1:
+            if timer==1:
+                self.bgm.play()
+
+
 
     def draw(self):
         self.image.draw(1100+self.x,self.y)#벨코즈 캐릭터
@@ -221,12 +260,14 @@ class Velkoztype1:
     image3=None
     danger=None
 
+
     def __init__(self):
         self.x, self.y =random.randint(1,7)*100,data['velkoztype1']['y']
         self.movex=data['velkoztype1']['movex']
         self.timer=data['velkoztype1']['timer']
         self.frame=data['velkoztype1']['frame']
         self.dangerframe=data['velkoztype1']['dangerframe']
+
         if Velkoztype1.danger==None:
             Velkoztype1.danger = load_image('image\\danger2.png')
         if Velkoztype1.image1==None:
@@ -236,7 +277,9 @@ class Velkoztype1:
         if Velkoztype1.image3==None:
             Velkoztype1.image3 = load_image('image\\velkoz\\velkoztype1-3.png')
 
+
     def update(self):
+        global bgm1,bgm2,bgm3
         self.timer+=1
         if self.timer%8==0:
             self.frame=(self.frame+1)%4
@@ -245,8 +288,10 @@ class Velkoztype1:
         if self.timer==144:
                 self.frame=0
         if self.timer>145 and self.timer<225:
-                self.movex+=10
+            self.movex+=10
+
         if self.timer>50 and self.timer<120:
+
             if self.y<700:
                 self.y+=10
 
@@ -548,14 +593,19 @@ checktype4=None
 chotype4frame=None
 chotype3=None
 font=None
+bgm=None
+ground=None
 
 def enter():
     global ground,gameback,life,pidul,character,title,font
     global chogas,chotype1,chotype2,chotype4,danger,team,chotypeF,checktype4,chotype4frame,chotype3
     global velkoz,danger2,velkozr,velkoztype3,velkoztype1,velkoztype2
     global pidulbat,movedanger,drain,drainframe,fear,swingbat, bigbox, littlebox
+    global bgm
 
-    ground = load_image('image\\ground.png')
+
+
+    ground = Ground()
     gameback = load_image('image\\gameback.png')
     life=load_image('image\\life.png')#생명
     font=load_font("font.ttf",20)
@@ -568,6 +618,7 @@ def enter():
     chotype2=Chotype2()
     chotype3=Chotype3()
     team = [Chotype3() for i in range(30)] #초가스 e 개수
+
     chotype4=Chotype4()
     velkoztype1=[Velkoztype1() for i in range(0,5)]
     velkoztype2=Velkoztype2()
@@ -690,7 +741,7 @@ def draw():
         if timer>90 and timer<320:
             velkoztype1[4].draw()
 
-        ground.draw(400,300)
+        ground.draw()
 
         if timer>320 and timer<600:
             velkoztype2.draw()
@@ -738,7 +789,7 @@ def draw():
         if timer%6==0:
             character.draw()
     if type!=1:
-       ground.draw(400,300) #땅
+       ground.draw() #땅
 
     life.clip_draw(266*lifecount,0,266,600,150,560,300,200)
     font.draw(50,500,'score: %d'%scorenow,color=(0,255,0))
@@ -748,7 +799,7 @@ def draw():
 
 
 def update():
-    global gameback,dir,scorenow
+    global gameback,dir,scorenow,bgm,chogasbgm
     global timer,lifecount,hurt,type,hurttime,life,character,ground,jump,jumpturn
     global chogas,danger,chotype1,chotype2, chotype3,chotype4,team
     global velkoz,velkoztype1,velkoztype3,danger2,freeze
@@ -763,9 +814,13 @@ def update():
     character.update()
     if hurt==1 and timer>=hurttime+100:
             hurt=0
+
     if type==0:
         timer+=1
         chogas.update()
+        if timer==1:
+            chogas.bgm.play()
+
         if timer>150 and timer<=300: #기술 등장
             chotype1.update()
         if timer>400 and timer<550:  #w 완료
@@ -773,7 +828,13 @@ def update():
         if timer>550 and timer<900:#초가스e시작
             for chotype3 in team:
                 chotype3.update()
+                if timer==551:
+                    team[0].bgm.play(5)
+
+
         if timer<950:
+            if timer==940:
+                chotype4.bgm.play()
             danger.update()
             if timer>=900:   #초가스 r 시작
                 for i in range(0,7):
