@@ -21,7 +21,7 @@ font=None
 def enter():
     global image,font
     image=load_image('image\\score.png')
-    font=load_font("font.ttf",200)
+    font=load_font("font.ttf",150)
 
 
 def exit():

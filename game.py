@@ -198,11 +198,14 @@ class Chotype3:
         global character,hurt,lifecount,hurttime,timer
         self.image.clip_draw(0, 0, 50, 100, self.x, self.y)
 
-        if self.x-50<character.x+100 and self.x+50>character.x+100:
-            if self.y>75+character.y and self.y-75<75+character.y and hurt==0:
-                lifecount-=1
-                hurt=1
-                hurttime=timer
+        for i in range(0,10):
+            if self.x-5-5*i<character.x+100 and self.x+5+5*i>character.x+100:
+                if self.y-72+i*8>75+character.y and self.y-80+i*8<75+character.y and hurt==0:
+                    lifecount-=1
+                    hurt=1
+                    hurttime=timer
+
+
 
 class Chotype4:
     image =None
@@ -352,7 +355,7 @@ class Velkoztype2:
 
 
     def update(self):
-        global hurt,character,lifecount,hurt,hurttime,timer
+        global hurt,character,lifecount,hurt,hurttime,timer,jump
         if timer>320 and timer<600:
             if 875+self.downy  >525:
                 self.downy -=50
@@ -365,6 +368,26 @@ class Velkoztype2:
                 self.frame=(self.frame+1)%8
             if timer ==390 or timer==453 or timer==517:
                 self.frame=0
+        if timer==453 or timer==581:
+                self.bgm.play()
+                if character.x+75>80 and character.x+75<180:
+                    jump=1
+                if character.x+75>280 and character.x+75<380:
+                    jump=1
+                if character.x+75>480 and character.x+75<580:
+                    jump=1
+                if character.x+75>680 and character.x+75<780:
+                    jump=1
+        if timer==389 or timer==517:
+                self.bgm.play()
+                if character.x+75>-20 and character.x+75<80:
+                    jump=1
+                if character.x+75>180 and character.x+75<280:
+                    jump=1
+                if character.x+75>380 and character.x+75<480:
+                    jump=1
+                if character.x+75>580 and character.x+75<680:
+                    jump=1
     def draw(self):
         global timer,jump,character
         self.image1.draw(400,875+self.downy,800,600)
@@ -374,32 +397,12 @@ class Velkoztype2:
             self.image2.clip_draw(100*self.frame,0,100,100,250,10)
             self.image2.clip_draw(100*self.frame,0,100,100,450,10)
             self.image2.clip_draw(100*self.frame,0,100,100,650,10)
-
-            if timer==389 or timer==517:
-                self.bgm.play()
-                if character.x+75>150 and character.x+75<250:
-                    jump=1
-                if character.x+75>350 and character.x+75<450:
-                    jump=1
-                if character.x+75>550 and character.x+75<650:
-                    jump=1
-                if character.x+75>750 and character.x+75<850:
-                    jump=1
         if (timer>389 and timer<=453) or (timer>517 and timer<=581):
             self.image2.clip_draw(100*self.frame,0,100,100,150,10)
             self.image2.clip_draw(100*self.frame,0,100,100,350,10)
             self.image2.clip_draw(100*self.frame,0,100,100,550,10)
             self.image2.clip_draw(100*self.frame,0,100,100,750,10)
-            if timer==453 or timer==581:
-                self.bgm.play()
-                if character.x+75>50 and character.x+75<150:
-                    jump=1
-                if character.x+75>250 and character.x+75<350:
-                    jump=1
-                if character.x+75>450 and character.x+75<550:
-                    jump=1
-                if character.x+75>650 and character.x+75<750:
-                    jump=1
+
 
 class Velkoztype3:
     sandglass =None
@@ -994,7 +997,8 @@ def update():
             if timer>1200:
                 if timer%4==0:
                     drainframe=(drainframe+1)%8
-                if character.x+100>movedanger.x-75 and character.x+100<movedanger.x+150 and character.y+75>movedanger.y-50 and hurt==0:
+                if character.x+100>movedanger.x-50 and character.x+100<movedanger.x+100 and\
+                                        character.y+75>movedanger.y and character.y+75<movedanger.y+100 and hurt==0:
                     lifecount-=1
                     hurt=1
                     hurttime=timer
