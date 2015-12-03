@@ -1,0 +1,18 @@
+{
+	"title":{"lifecount":2,"hurt":0,"hurttime":0,"timer":0,"scorenow":0,"RIGHT_STATE":0,"LEFT_STATE":0,"STAND_STATE":2,"count":0,
+"dir":0,"freeze":0,"drainframe":0},
+	"character": {"x": 0, "y": 0, "state": 0},
+	"chogas": {"x":0, "y": 300},
+	"danger1":{"x":0, "y":0, "frame":0,"timer":0},
+	"chotype1":{"x":0, "y":0, "frame":0},
+	"chotype2":{"x":0, "y":0, "frame":0,"check":0},
+	"velkoz":{"x":0, "y":250},
+	"velkoztype1":{"x":0, "y":0,"movex":0,"timer":0,"frame":0,"dangerframe":0},
+	"velkoztype2":{"downx":0, "downy":0,"frame":0},
+	"velkoztype3":{"x":0},
+	"pidul":{"x":0,"y":0},
+	"pidulbat":{"y":550,"frame":0,"plusx":5,"plusy":5},
+	"movedanger":{"frame":0,"y":110},
+	"bigbox":{"x":600,"y":500},
+	"littlebox":{"y":210}
+}
