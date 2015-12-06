@@ -70,24 +70,24 @@ def handle_events():
 
                 game.pidul.x=data['pidul']['x']
                 for i in range(0,5):
-                    game.pidulbat[i].x=random.randint(100,700)
-                    game.pidulbat[i].y=data['pidulbat']['y']
-                    game.pidulbat[i].frame=data['pidulbat']['frame']
-                    game.pidulbat[i].plusx=data['pidulbat']['plusx']
-                    game.pidulbat[i].plusy=data['pidulbat']['plusy']
-                game.movedanger.x==random.randint(100,700)
-                game.movedanger.y=data['movedanger']['y']
+                    game.pidultype1[i].x=random.randint(100,700)
+                    game.pidultype1[i].y=data['pidulbat']['y']
+                    game.pidultype1[i].frame=data['pidulbat']['frame']
+                    game.pidultype1[i].plusx=data['pidulbat']['plusx']
+                    game.pidultype1[i].plusy=data['pidulbat']['plusy']
+                game.pidultype2.x==random.randint(100,700)
+                game.pidultype2.y=data['movedanger']['y']
                 game.drainframe=data['title']['drainframe']
-                game.bigbox.x=data['bigbox']['x']
-                game.bigbox.y=data['bigbox']['y']
+                game.pidultype4Bigbox.x=data['bigbox']['x']
+                game.pidultype4Bigbox.y=data['bigbox']['y']
                 for i in range(0,10):
-                    game.swingbat[i].x=random.randint(100,700)
-                    game.swingbat[i].y=random.randint(100,1000)+500
-                    game.swingbat[i].angle=random.randint(0,360)
+                    game.pidultype3[i].x=random.randint(100,700)
+                    game.pidultype3[i].y=random.randint(100,1000)+500
+                    game.pidultype3[i].angle=random.randint(0,360)
                 for i in range(0,20):
-                    game.littlebox[i].x=520+random.randint(0,280)
-                    game.littlebox[i].y=data['littlebox']['y']
-                    game.littlebox[i].fall=25+random.randint(0,10)
+                    game.pidultype4Littlebox[i].x=520+random.randint(0,280)
+                    game.pidultype4Littlebox[i].y=data['littlebox']['y']
+                    game.pidultype4Littlebox[i].fall=25+random.randint(0,10)
 
                 game.lifecount=data['title']['lifecount']
                 game.hurttime=data['title']['hurttime'] #맞은 시간
