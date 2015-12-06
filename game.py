@@ -24,6 +24,7 @@ data_file = open('startpoint.txt','r')
 data = json.load(data_file)
 data_file.close()
 
+current_time=get_time()
 
 lifecount=data['title']['lifecount']
 hurt=data['title']['hurt']   #맞음
@@ -50,6 +51,14 @@ class Ground:
 
 
 class Character:
+
+    PIXEL_PER_METER=(10.0/0.1)
+    RUN_SPEED_KMPH=20.0
+    RUN_SPEED_MPM=(RUN_SPEED_KMPH*1000.0/60.0)
+    RUN_SPEED_MPS=(RUN_SPEED_MPM/60.0)
+    RUN_SPEED_PPS=(RUN_SPEED_MPS * PIXEL_PER_METER)
+
+
     image =None
 
 
@@ -60,19 +69,22 @@ class Character:
             Character.image = load_image('image\\character.png')
 
 
-    def update(self):
+    def update(self,frame_time):
         global dir,RIGHT_STATE,LEFT_STATE
+        distance=Character.RUN_SPEED_PPS*frame_time
+
+
 
         if not(timer>1500 and timer<=2100):
             if self.state==RIGHT_STATE:
-                self.x=min(690,self.x+dir*5)
+                self.x=min(690,self.x+dir*distance/2)
             if self.state==LEFT_STATE:
-                self.x=max(-90,self.x+dir*5)
+                self.x=max(-90,self.x+dir*distance/2)
         else:
             if self.state==LEFT_STATE:
-                self.x=min(690,self.x+(-1*dir*5))
+                self.x=min(690,self.x+(-1*dir*distance/2))
             if self.state==RIGHT_STATE:
-                self.x=max(-90,self.x+(-1*dir*5))
+                self.x=max(-90,self.x+(-1*dir*distance/2))
 
 
     def draw(self):
@@ -838,22 +850,29 @@ def draw():
     update_canvas()
 
 
+def get_frame_time():
 
+    global current_time
+    frame_time = get_time() - current_time
+    current_time += frame_time
+    return frame_time
 
 def update():
-    global gameback,dir,scorenow,bgm,chogasbgm
+    global gameback,dir,scorenow,bgm,chogasbgm,current_time
     global timer,lifecount,hurt,type,hurttime,life,character,ground,jump,jumpturn
     global chogas,danger,chotype1,chotype2, chotype3,chotype4,team
     global velkoz,velkoztype1,velkoztype3,danger2,freeze
     global pidul,pidulbat,pidulbatteam,drainframe,movedanger,drain,bigbox,littlebox,scorenow
 
 
+    frame_time=get_frame_time()
+
     if lifecount==-1:
         game_framework.push_state(score)
 
 
     scorenow+=1
-    character.update()
+    character.update(frame_time)
     if hurt==1 and timer>=hurttime+100:
             hurt=0
 
